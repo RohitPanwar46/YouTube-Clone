@@ -1,8 +1,13 @@
 "use client"
 
+import Link from 'next/link';
+import {useUser} from '@/context/userContext';
+
 const Navbar = () => {
+  const { user, setUser } = useUser();
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-[#0f0f0f] shadow-lg z-50 flex items-center px-4">
+    <header className="fixed top-0 left-0 right-0 h-16 bg-[#0f0f0f] shadow-lg z-50 flex items-center justify-between px-4">
+      {/* Left Side - Logo and Title */}
       <div className="flex items-center gap-4">
         <div className="flex items-center text-2xl font-bold">
           <svg className="w-8 h-8 text-red-600 mr-2" fill="currentColor" viewBox="0 0 576 512">
@@ -12,9 +17,9 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="flex-1 max-w-2xl mx-4">
-        <div className="flex">
+      {/* Center - Search Bar */}
+      <div className="flex-1 max-w-2xl mx-8 flex justify-center">
+        <div className="flex w-full max-w-xl">
           <input 
             type="text" 
             placeholder="Search videos, channels, and more" 
@@ -28,7 +33,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Right Side Icons */}
+      {/* Right Side - Action Icons */}
       <div className="flex items-center gap-4">
         <button className="p-2 rounded-full hover:bg-[#303030] transition-all duration-300">
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 576 512">
@@ -41,10 +46,25 @@ const Navbar = () => {
           </svg>
           <span className="absolute top-1 right-1 bg-red-500 text-xs w-5 h-5 rounded-full flex items-center justify-center">9+</span>
         </button>
+        
+        {/* Auth Buttons */}
+        <div className="flex items-center gap-2">
+          <Link 
+            href="/login" 
+            className="px-4 py-2 text-sm font-medium text-white hover:text-red-400 transition-colors duration-200"
+          >
+            Sign In
+          </Link>
+          <Link 
+            href="/register" 
+            className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200"
+          >
+            Sign Up
+          </Link>
+        </div>
+        
         <button className="p-2 rounded-full hover:bg-[#303030] transition-all duration-300">
-          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 448 512">
-            <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/>
-          </svg>
+          <img src={user?.avatar} className="w-8 h-8 rounded-full" fill="currentColor" viewBox="0 0 448 512" alt="User Avatar" />
         </button>
       </div>
     </header>
