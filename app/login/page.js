@@ -66,17 +66,14 @@ const LoginPage = () => {
           email: formData.email,
           password: formData.password,
         }),
+        credentials: "include",
       });
 
       console.log("Login successful:", data);
       setUser(data.data.user);
 
-      // Store user data or token in localStorage/sessionStorage
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
-      if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
+      if (data.data.user) {
+        localStorage.setItem("user", JSON.stringify(data.data.user));
       }
 
       // Redirect to home page after successful login

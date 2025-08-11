@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
+import {apiRequest, API_ENDPOINTS} from './lib/api';
 
 // Icons component
 const Icons = () => (
@@ -98,88 +99,20 @@ export default function YouTubeHome() {
   }, []);
 
   // Video data
-  const videos = [
-    {
-      id: 1,
-      title: "Building a Modern YouTube Clone with Next.js & Tailwind CSS",
-      channel: "Web Dev Mastery",
-      views: "128K",
-      date: "2 days ago",
-      duration: "15:42",
-      thumbnail: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      channelAvatar: "https://randomuser.me/api/portraits/men/32.jpg"
-    },
-    {
-      id: 2,
-      title: "Learn Advanced CSS Animations in 30 Minutes - Masterclass",
-      channel: "CSS Wizards",
-      views: "540K",
-      date: "1 week ago",
-      duration: "28:19",
-      thumbnail: "https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      channelAvatar: "https://randomuser.me/api/portraits/women/44.jpg"
-    },
-    {
-      id: 3,
-      title: "JavaScript Array Mastery - Modern Methods You Need to Know",
-      channel: "JS Universe",
-      views: "320K",
-      date: "3 weeks ago",
-      duration: "21:05",
-      thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      channelAvatar: "https://randomuser.me/api/portraits/men/62.jpg"
-    },
-    {
-      id: 4,
-      title: "Build a Responsive Dashboard with React & Tailwind CSS",
-      channel: "React Masters",
-      views: "1.2M",
-      date: "1 month ago",
-      duration: "1:15:33",
-      thumbnail: "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      channelAvatar: "https://randomuser.me/api/portraits/women/68.jpg"
-    },
-    {
-      id: 5,
-      title: "Node.js Backend Architecture - Best Practices for Scalable Apps",
-      channel: "Backend Engineers",
-      views: "98K",
-      date: "2 months ago",
-      duration: "45:18",
-      thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      channelAvatar: "https://randomuser.me/api/portraits/men/41.jpg"
-    },
-    {
-      id: 6,
-      title: "Creating Beautiful UI with CSS Grid & Flexbox - Real Projects",
-      channel: "UI Design Pro",
-      views: "420K",
-      date: "3 months ago",
-      duration: "38:22",
-      thumbnail: "https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      channelAvatar: "https://randomuser.me/api/portraits/women/22.jpg"
-    },
-    {
-      id: 7,
-      title: "The Future of Web Development - 2023 Trends and Predictions",
-      channel: "Tech Forward",
-      views: "2.5M",
-      date: "4 months ago",
-      duration: "22:45",
-      thumbnail: "https://images.unsplash.com/photo-1496171367470-9ed9a91ea931?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      channelAvatar: "https://randomuser.me/api/portraits/men/19.jpg"
-    },
-    {
-      id: 8,
-      title: "Mastering TypeScript - Advanced Patterns and Techniques",
-      channel: "TypeScript Gurus",
-      views: "210K",
-      date: "5 months ago",
-      duration: "1:12:08",
-      thumbnail: "https://images.unsplash.com/photo-1618044733300-9472054094ee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-      channelAvatar: "https://randomuser.me/api/portraits/women/51.jpg"
-    },
-  ];
+  const [videos, setVideos] = useState([]);
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const result = await apiRequest(API_ENDPOINTS.GETVIDEOS, { method: 'GET', credentials: "include" });
+        setVideos(result);
+        console.log('Fetched videos:', result);
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+      }
+    };
+    fetchVideos();
+  }, []);
 
   const categories = [
     'All', 'Gaming', 'Music', 'Live', 'JavaScript', 'React', 

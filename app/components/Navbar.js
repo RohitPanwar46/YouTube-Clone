@@ -1,6 +1,7 @@
 "use client"
 
 import Link from 'next/link';
+import Image from 'next/image';
 import {useUser} from '@/context/userContext';
 
 const Navbar = () => {
@@ -62,10 +63,14 @@ const Navbar = () => {
             Sign Up
           </Link>
         </div>
-        
-        <button className="p-2 rounded-full hover:bg-[#303030] transition-all duration-300">
-          <img src={user?.avatar} className="w-8 h-8 rounded-full" fill="currentColor" viewBox="0 0 448 512" alt="User Avatar" />
-        </button>
+          <Image
+            src={user?.avatar || "/default-avatar.png"}
+            className="w-8 h-8 rounded-full"
+            alt="User Avatar"
+            width={32}
+            height={32}
+            priority
+          />
       </div>
     </header>
   );

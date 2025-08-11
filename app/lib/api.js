@@ -7,6 +7,7 @@ export const BACKEND_URL = process.env.BACKEND_URL || "https://project-youtube-b
 export const API_ENDPOINTS = {
   LOGIN: '/api/v1/users/login',
   REGISTER: '/api/v1/users/register',
+  GETVIDEOS: '/api/v1/videos',
 };
 
 // Common fetch wrapper with error handling
