@@ -259,7 +259,7 @@ export default function YouTubeHome() {
                     <div className="aspect-video bg-gradient-to-r from-[#202020] to-[#303030] relative overflow-hidden">
                       <img 
                         src={video.thumbnail} 
-                        alt={video.title} 
+                        alt={video.title}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
@@ -280,7 +280,7 @@ export default function YouTubeHome() {
                     <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-orange-500 mr-3 flex-shrink-0 overflow-hidden">
                       <img 
                         src={video.owner.avatar} 
-                        alt={video.channel} 
+                        alt={video.owner.name} 
                         className="w-full h-full object-cover"
                       />
                     </div>
