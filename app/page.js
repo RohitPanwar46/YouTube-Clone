@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import {apiRequest, API_ENDPOINTS} from './lib/api';
+import Image from 'next/image';
 
 // Icons component
 const Icons = () => (
@@ -278,10 +279,12 @@ export default function YouTubeHome() {
                   
                   <div className="p-3 flex">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-orange-500 mr-3 flex-shrink-0 overflow-hidden">
-                      <img 
+                      <Image 
                         src={video.owner.avatar} 
-                        alt={video.owner.name} 
+                        alt={video.owner.username} 
                         className="w-full h-full object-cover"
+                        width={40}
+                        height={40}
                       />
                     </div>
                     <div>
@@ -289,7 +292,7 @@ export default function YouTubeHome() {
                         {video.title}
                       </h3>
                       <p className="text-[#aaa] text-sm group-hover:text-white transition-colors duration-300">
-                        {video.owner.name}
+                        {video.owner.username}
                       </p>
                       <div className="flex text-[#aaa] text-sm">
                         <span>{video.views} views</span>
