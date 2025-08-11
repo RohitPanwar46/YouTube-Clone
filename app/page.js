@@ -279,7 +279,7 @@ export default function YouTubeHome() {
                   <div className="p-3 flex">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-orange-500 mr-3 flex-shrink-0 overflow-hidden">
                       <img 
-                        src={video.channelAvatar} 
+                        src={video.owner.avatar} 
                         alt={video.channel} 
                         className="w-full h-full object-cover"
                       />
@@ -289,12 +289,12 @@ export default function YouTubeHome() {
                         {video.title}
                       </h3>
                       <p className="text-[#aaa] text-sm group-hover:text-white transition-colors duration-300">
-                        {video.channel}
+                        {video.owner}
                       </p>
                       <div className="flex text-[#aaa] text-sm">
                         <span>{video.views} views</span>
                         <span className="mx-2">•</span>
-                        <span>{video.date}</span>
+                        <span>{video.createdAt}</span>
                       </div>
                     </div>
                   </div>
