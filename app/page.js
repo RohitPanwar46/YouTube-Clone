@@ -253,7 +253,7 @@ export default function YouTubeHome() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {videos.map(video => (
                 <div 
-                  key={video.id}
+                  key={video._id}
                   className="bg-[#181818] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group"
                 >
                   <div className="relative">
