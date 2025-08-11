@@ -105,7 +105,7 @@ export default function YouTubeHome() {
     const fetchVideos = async () => {
       try {
         const result = await apiRequest(API_ENDPOINTS.GETVIDEOS, { method: 'GET', credentials: "include" });
-        setVideos(result);
+        setVideos(result.data.videos);
         console.log('Fetched videos:', result);
       } catch (error) {
         console.error('Error fetching videos:', error);
