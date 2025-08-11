@@ -289,7 +289,7 @@ export default function YouTubeHome() {
                         {video.title}
                       </h3>
                       <p className="text-[#aaa] text-sm group-hover:text-white transition-colors duration-300">
-                        {video.owner}
+                        {video.owner.name}
                       </p>
                       <div className="flex text-[#aaa] text-sm">
                         <span>{video.views} views</span>
