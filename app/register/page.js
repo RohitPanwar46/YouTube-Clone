@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { uploadFiles, API_ENDPOINTS } from "../lib/api";
-import AvatarCropper from "../components/AvatarCropper";
+import AvatarCropper from "../components/AvatarCropper.jsx";
+import Image from "next/image";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -226,7 +227,7 @@ const RegisterPage = () => {
             {formData.avatar && (
               <div className="flex items-center gap-4">
                 <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-700">
-                  <img src={avatarPreviewUrl} alt="avatar preview" className="w-full h-full object-cover" />
+                  <Image fill style={{ objectFit: "cover" }} src={avatarPreviewUrl} alt="avatar preview" className="w-full h-full object-cover" />
                 </div>
                 <button type="button" className="text-sm text-red-400" onClick={() => setFormData(prev => ({ ...prev, avatar: null }))}>
                   Change

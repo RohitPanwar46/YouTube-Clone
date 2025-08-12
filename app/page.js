@@ -258,9 +258,11 @@ export default function YouTubeHome() {
                 >
                   <div className="relative">
                     <div className="aspect-video bg-gradient-to-r from-[#202020] to-[#303030] relative overflow-hidden">
-                      <img 
+                      <Image 
                         src={video.thumbnail} 
                         alt={video.title}
+                        fill
+                        style={{objectFit: "cover"}}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
