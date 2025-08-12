@@ -8,6 +8,7 @@ export const API_ENDPOINTS = {
   LOGIN: '/api/v1/users/login',
   REGISTER: '/api/v1/users/register',
   GETVIDEOS: '/api/v1/videos',
+  REFRESH_ACCESS_TOKEN: '/api/v1/users/refresh-token',
 };
 
 // Common fetch wrapper with error handling
