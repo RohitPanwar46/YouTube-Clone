@@ -126,7 +126,7 @@ export default function YouTubeHome() {
     };
     fetchVideos();
     refreshAccessToken();
-  }, []);
+  },);
 
   const categories = [
     'All', 'Gaming', 'Music', 'Live', 'JavaScript', 'React', 
