@@ -93,13 +93,6 @@ export default function YouTubeHome() {
     { icon: "circle", color: "text-yellow-400", text: "Gaming Central" },
   ];
 
-  // Simulate data loading
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, []);
 
   // Video data
   const [videos, setVideos] = useState([]);
@@ -113,9 +106,11 @@ export default function YouTubeHome() {
           credentials: "include",
         });
         setVideos(result.data.videos);
+        setIsLoading(false);
         console.log("Fetched videos:", result);
       } catch (error) {
         console.error("Error fetching videos:", error);
+        setIsLoading(false);
       }
     };
     const refreshAccessToken = async () => {
