@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { apiRequest, API_ENDPOINTS } from "../lib/api";
 
 const Navbar = () => {
-  const { user, isLoggedin, setIsLoggedin } = useUser();
+  const { user, isLoggedin, setIsloggedin } = useUser();
 
   async function handleLogout() {
     try {
@@ -16,7 +16,7 @@ const Navbar = () => {
               credentials: "include",
             });
       console.log("Logout successful:", data);
-      setIsLoggedin(false);
+      setIsloggedin(false);
     } catch (error) {
       console.error("Error logging out:", error);
     }

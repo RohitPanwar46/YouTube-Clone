@@ -73,7 +73,7 @@ const Icons = () => (
 export default function YouTubeHome() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
-  const { setUser, setIsLoggedin } = useUser();
+  const { setUser, setIsloggedin } = useUser();
 
   const sidebarItems = [
     { icon: "home", text: "Home" },
@@ -118,16 +118,16 @@ export default function YouTubeHome() {
           method: "POST",
           credentials: "include",
         });
-        setIsLoggedin(true);
+        setIsloggedin(true);
       } catch (error) {
         console.error("Error refreshing access token:", error);
         setUser(null);
-        setIsLoggedin(false);
+        setIsloggedin(false);
       }
     };
     fetchVideos();
     refreshAccessToken();
-  }, [setUser, setIsLoggedin]);
+  }, [setUser, setIsloggedin]);
 
   const categories = [
     "All",
