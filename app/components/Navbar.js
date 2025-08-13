@@ -3,9 +3,25 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import {useUser} from '@/context/userContext';
+import { useState } from 'react';
+import { apiRequest, API_ENDPOINTS } from "../lib/api";
 
 const Navbar = () => {
-  const { user, setUser } = useUser();
+  const { user, isLoggedin, setIsLoggedin } = useUser();
+
+  async function handleLogout() {
+    try {
+      const data = await apiRequest(API_ENDPOINTS.LOGOUT, {
+              method: "POST",
+              credentials: "include",
+            });
+      console.log("Logout successful:", data);
+      setIsLoggedin(false);
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  }
+
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-[#0f0f0f] shadow-lg z-50 flex items-center justify-between px-4">
       {/* Left Side - Logo and Title */}
@@ -49,7 +65,15 @@ const Navbar = () => {
         </button>
         
         {/* Auth Buttons */}
-        <div className="flex items-center gap-2">
+        
+        {isLoggedin ? <div className="flex items-center gap-2">
+          <button 
+            onClick={handleLogout}
+            className="px-4 py-2 text-sm font-medium text-white hover:text-red-400 transition-colors duration-200"
+          >
+            Logout
+          </button>
+        </div> :<div className="flex items-center gap-2">
           <Link 
             href="/login" 
             className="px-4 py-2 text-sm font-medium text-white hover:text-red-400 transition-colors duration-200"
@@ -62,7 +86,7 @@ const Navbar = () => {
           >
             Sign Up
           </Link>
-        </div>
+        </div>}
           <Image
             src={user?.avatar || "/default-avatar.png"}
             className="w-8 h-8 rounded-full"

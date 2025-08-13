@@ -126,7 +126,6 @@ const RegisterPage = () => {
 
       const data = await uploadFiles(API_ENDPOINTS.REGISTER, formDataToSend);
 
-      console.log("Registration successful:", data);
       alert("Registration successful! Please login.");
       router.push("/login");
     } catch (error) {

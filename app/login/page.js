@@ -9,7 +9,7 @@ import { useUser } from "@/context/userContext";
 
 const LoginPage = () => {
   const router = useRouter();
-  const { setUser } = useUser();
+  const { setUser,setIsloggedin } = useUser();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -69,9 +69,8 @@ const LoginPage = () => {
         credentials: "include",
       });
 
-      console.log("Login successful:", data);
       setUser(data.data.user);
-
+      setIsloggedin(true);
       if (data.data.user) {
         localStorage.setItem("user", JSON.stringify(data.data.user));
       }
