@@ -77,8 +77,8 @@ export default function YouTubeHome() {
 
   const sidebarItems = [
     { icon: "home", text: "Home" },
-    { icon: "fire", text: "Trending" },
-    { icon: "compass", text: "Explore" },
+    { icon: "fire", text: "Upload" },
+    { icon: "compass", text: "Channel" },
     { icon: "folder", text: "Subscriptions" },
     { separator: true },
     { icon: "photo-video", text: "Library" },
