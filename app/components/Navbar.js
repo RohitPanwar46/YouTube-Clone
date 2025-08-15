@@ -14,7 +14,7 @@ const Navbar = () => {
 
   function handleSubmit(event){
     event.preventDefault();
-    router.push(`/search?q=${searchQuery}`);
+    router.push(`/search?title=${searchQuery}`);
   }
 
   function handleChange(event) {
