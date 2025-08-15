@@ -16,9 +16,8 @@ const searchParams = useSearchParams();
     const fetchVideos = async () => {
       // fetching videos
       try {
-        const data = await apiRequest(API_ENDPOINTS.VIDEOS, {
+        const data = await apiRequest(`api/v1/videos?title=${title}`, {
           method: "GET",
-          params: { title },
         });
         setVideos(data);
         setIsLoading(false);

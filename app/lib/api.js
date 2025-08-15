@@ -68,3 +68,4 @@ export const uploadFiles = async (endpoint, formData) => {
   }
 };
 
+// custom api endpoints
