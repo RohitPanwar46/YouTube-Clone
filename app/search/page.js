@@ -6,31 +6,33 @@ import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { useSearchParams } from "next/navigation";
 
-
 const Page = () => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
-  const title = searchParams.get("title");
+  const title = searchParams.get("title"); // yahi se query param aa raha hai
 
   useEffect(() => {
     const fetchVideos = async () => {
-      // fetching videos
       try {
-        console.log(params)
-        console.log(params.title)
+        console.log(title); // params.title ki jagah title log karo
+        if (!title) return; // agar title nahi mila to request mat bhejo
+
         const data = await apiRequest(`api/v1/videos?query=${title}`, {
           method: "GET",
         });
+
         setVideos(data);
-        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching videos:", error);
+      } finally {
         setIsLoading(false);
       }
     };
+
     fetchVideos();
   }, [title]);
+
 
   return (
     <div>
