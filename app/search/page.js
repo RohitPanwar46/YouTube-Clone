@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { Suspense } from "react";
 import SearchContent from "@/components/SearchContent";
 
-const Page = () => {
+const Page = ({searchParams}) => {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <SearchContent />
+      <SearchContent searchParams={searchParams} />
     </Suspense>
   );
 };

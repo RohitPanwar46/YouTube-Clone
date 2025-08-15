@@ -5,9 +5,8 @@ import Image from "next/image";
 import Navbar from "./Navbar";
 
 
-const SearchContent = () => {
+const SearchContent = ({ searchParams }) => {
 
-const searchParams = useSearchParams();
   const title = searchParams.get("title");
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
