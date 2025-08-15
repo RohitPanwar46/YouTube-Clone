@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, Suspense } from "react";
-import SearchContent from "@/components/searchContent";
+import SearchContent from "@/components/SearchContent";
 
 const Page = () => {
 
