@@ -13,7 +13,7 @@ const Page = ({ searchParams }) => {
     const fetchVideos = async () => {
       // fetching videos
       try {
-        const data = await apiRequest(`api/v1/videos?query=${searchParams}`, {
+        const data = await apiRequest(`api/v1/videos?query=${searchParams.title}`, {
           method: "GET",
         });
         setVideos(data);
