@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useSearchParams } from "react";
+import React, { useState, useEffect } from "react";
 import { apiRequest } from "../lib/api";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
+import { useSearchParams } from "next/navigation";
 
 
 const Page = () => {
