@@ -1,20 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useSearchParams } from "react";
 import { apiRequest } from "../lib/api";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 
-const Page = ({ searchParams }) => {
+
+const Page = () => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const title = searchParams.get("title");
 
   useEffect(() => {
     const fetchVideos = async () => {
       // fetching videos
       try {
         console.log(await searchParams);
-        const data = await apiRequest(`api/v1/videos?query=${searchParams.title}`, {
+        const data = await apiRequest(`api/v1/videos?query=${title}`, {
           method: "GET",
         });
         setVideos(data);
