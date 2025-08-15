@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { apiRequest } from "../lib/api";
 import Image from "next/image";
-import Navbar from "../components/Navbar";
+import Navbar from "@/components/Navbar";
 
 const Page = ({ searchParams }) => {
   const [videos, setVideos] = useState([]);
