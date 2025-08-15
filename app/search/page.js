@@ -11,7 +11,7 @@ const Page = () => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const params = useParams();
-  const title = params.get("title");
+  const title = params.title;
 
   useEffect(() => {
     const fetchVideos = async () => {
