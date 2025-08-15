@@ -1,7 +1,8 @@
+"use client"
 import React, { useState, useEffect } from "react";
 import { apiRequest } from "../app/lib/api";
 import Image from "next/image";
-import Navbar from "./Navbar";
+import Navbar from "@/components/Navbar";
 
 
 const SearchContent = ({ searchParams }) => {
