@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import { apiRequest, API_ENDPOINTS } from "./lib/api";
 import Image from "next/image";
 import { useUser } from "@/context/userContext";
+import Link from "next/link";
 
 // Icons component
 const Icons = () => (
@@ -76,21 +77,21 @@ export default function YouTubeHome() {
   const { setUser, setIsloggedin } = useUser();
 
   const sidebarItems = [
-    { icon: "home", text: "Home" },
-    { icon: "fire", text: "Upload" },
-    { icon: "compass", text: "Channel" },
-    { icon: "folder", text: "Subscriptions" },
+    { icon: "home", text: "Home", url: "/" },
+    { icon: "fire", text: "Upload", url: "/upload" },
+    { icon: "compass", text: "Channel", url: "/channel" },
+    { icon: "folder", text: "Subscriptions", url: "/subscriptions" },
     { separator: true },
-    { icon: "photo-video", text: "Library" },
-    { icon: "history", text: "History" },
-    { icon: "clock", text: "Watch later" },
-    { icon: "thumbs-up", text: "Liked videos" },
+    { icon: "photo-video", text: "Playlists", url: "/playlists" },
+    { icon: "history", text: "History", url: "/history" },
+    { icon: "clock", text: "Watch later", url: "/playlists/watch-later" },
+    { icon: "thumbs-up", text: "Liked videos", url: "/liked-videos" },
     { separator: true },
     { title: "Subscriptions" },
-    { icon: "circle", color: "text-red-400", text: "Tech Insider" },
-    { icon: "circle", color: "text-green-400", text: "Nature World" },
-    { icon: "circle", color: "text-blue-400", text: "Film Theory" },
-    { icon: "circle", color: "text-yellow-400", text: "Gaming Central" },
+    { icon: "circle", color: "text-red-400", text: "Tech Insider", url: "/subscriptions/tech-insider" },
+    { icon: "circle", color: "text-green-400", text: "Nature World", url: "/subscriptions/nature-world" },
+    { icon: "circle", color: "text-blue-400", text: "Film Theory", url: "/subscriptions/film-theory" },
+    { icon: "circle", color: "text-yellow-400", text: "Gaming Central", url: "/subscriptions/gaming-central" },
   ];
 
 
@@ -262,8 +263,9 @@ export default function YouTubeHome() {
                   {item.title}
                 </div>
               ) : (
-                <div
+                <Link
                   key={index}
+                  href={item.url}
                   className="flex items-center px-6 py-3 cursor-pointer hover:bg-[#181818] transition-all duration-300 group"
                 >
                   <div
@@ -276,7 +278,7 @@ export default function YouTubeHome() {
                   <span className="group-hover:text-white transition-colors duration-300">
                     {item.text}
                   </span>
-                </div>
+                </Link>
               )
             )}
           </div>
