@@ -5,10 +5,17 @@ import Image from "next/image";
 import { useUser } from "@/context/userContext";
 import { useState } from "react";
 import { apiRequest, API_ENDPOINTS } from "../lib/api";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const { user, isLoggedin, setIsloggedin, setUser } = useUser();
   const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  function handleSubmit(event){
+    event.preventDefault();
+    router.push(`/search?q=${searchQuery}`);
+  }
 
   function handleChange(event) {
     setSearchQuery(event.target.value);
@@ -47,7 +54,7 @@ const Navbar = () => {
       {/* Center - Search Bar */}
       <div className="flex-1 max-w-2xl mx-8 flex justify-center">
         <div className="flex w-full max-w-xl">
-          <form action={`/search?query=${searchQuery}`} className="flex w-full">
+          <form onSubmit={handleSubmit} className="flex w-full">
             <input
               onChange={handleChange}
               type="text"
