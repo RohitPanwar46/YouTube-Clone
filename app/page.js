@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import Navbar from "./components/Navbar";
+import Navbar from "@/components/Navbar";
 import { apiRequest, API_ENDPOINTS } from "./lib/api";
 import Image from "next/image";
 import { useUser } from "@/context/userContext";

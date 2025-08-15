@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { uploadFiles, API_ENDPOINTS } from "../lib/api";
-import AvatarCropper from "../components/AvatarCropper.jsx";
+import AvatarCropper from "@/components/AvatarCropper.jsx";
 import Image from "next/image";
 
 const RegisterPage = () => {

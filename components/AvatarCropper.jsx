@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from "react";
 import Cropper from "react-easy-crop";
-import getCroppedImg from "../lib/getCroppedImg";
+import getCroppedImg from "../app/lib/getCroppedImg";
 
 export default function AvatarCropper({ imageSrc, onComplete, onCancel }) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });

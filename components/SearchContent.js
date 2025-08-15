@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { apiRequest, API_ENDPOINTS } from "../lib/api";
+import { apiRequest, API_ENDPOINTS } from "../app/lib/api";
 import Image from "next/image";
 import Navbar from "./Navbar";
 
