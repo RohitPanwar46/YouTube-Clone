@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import { apiRequest } from "../lib/api";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 
 const Page = () => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const searchParams = useSearchParams();
+  const searchParams = useParams();
   const title = searchParams.get("title");
 
   useEffect(() => {
