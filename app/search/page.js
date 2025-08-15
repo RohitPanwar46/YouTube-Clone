@@ -10,8 +10,8 @@ import { useParams } from "next/navigation";
 const Page = () => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const searchParams = useParams();
-  const title = searchParams.get("title");
+  const params = useParams();
+  const title = params.get("title");
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -28,7 +28,7 @@ const Page = () => {
       }
     };
     fetchVideos();
-  }, [searchParams]);
+  }, [title]);
 
   return (
     <div>
