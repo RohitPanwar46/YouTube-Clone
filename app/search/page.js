@@ -10,21 +10,32 @@ const Page = () => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const searchParams = useSearchParams();
-  const title = searchParams.get("title"); // yahi se query param aa raha hai
+  const title = searchParams?.get("title") || ""; // safe
 
   useEffect(() => {
     const fetchVideos = async () => {
+      setIsLoading(true);
       try {
-        console.log(title); // params.title ki jagah title log karo
-        if (!title) return; // agar title nahi mila to request mat bhejo
+        console.log("DEBUG: title value ->", title);
 
-        const data = await apiRequest(`api/v1/videos?query=${title}`, {
-          method: "GET",
-        });
+        if (!title) {
+          // no title — nothing to fetch
+          setVideos([]);
+          return;
+        }
 
-        setVideos(data);
+        // ensure correct url (leading slash) and encode the query param
+        const query = encodeURIComponent(title);
+        const endpoint = `/api/v1/videos?query=${query}`; // or full backend URL
+
+        console.log("DEBUG: calling API ->", endpoint);
+        const data = await apiRequest(endpoint, { method: "GET" });
+
+        console.log("DEBUG: api response ->", data);
+        setVideos(data || []);
       } catch (error) {
         console.error("Error fetching videos:", error);
+        setVideos([]);
       } finally {
         setIsLoading(false);
       }
