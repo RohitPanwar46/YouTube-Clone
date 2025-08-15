@@ -17,6 +17,8 @@ const Page = () => {
     const fetchVideos = async () => {
       // fetching videos
       try {
+        console.log(params)
+        console.log(params.title)
         const data = await apiRequest(`api/v1/videos?query=${title}`, {
           method: "GET",
         });
