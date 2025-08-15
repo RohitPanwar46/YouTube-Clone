@@ -248,7 +248,7 @@ export default function YouTubeHome() {
 
       {/* Main Content */}
       <main className="pt-16 flex">
-        {/* Sidebar - Always Visible */}
+        {/* Sidebar  */}
         <aside className="fixed top-16 bottom-0 bg-[#0f0f0f] w-64 z-40 overflow-y-auto">
           <div className="py-4">
             {sidebarItems.map((item, index) =>
@@ -319,6 +319,7 @@ export default function YouTubeHome() {
                         src={video.thumbnail}
                         alt={video.title}
                         fill
+                        loading="eager"
                         style={{ objectFit: "cover" }}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
