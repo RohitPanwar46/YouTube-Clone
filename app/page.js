@@ -310,7 +310,7 @@ export default function YouTubeHome() {
               <div className="w-12 h-12 border-4 border-[#303030] border-t-red-500 rounded-full animate-spin"></div>
             </div>
           ) : (
-            <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 md:grid-cols-4 lg:grid-cols-5">
+            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
               {videos.map((video) => (
                 <div
                   key={video._id}
