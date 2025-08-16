@@ -268,8 +268,8 @@ export default function YouTubeHome() {
         <button 
           type="button"
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className={`fixed top-4 left-4 z-30 p-3 rounded-full shadow-lg transition-all duration-300 ${
-            sidebarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100 md:hidden'
+          className={`fixed top-4 left-4 z-30 p-3 rounded-full shadow-lg transition-all opacity-100 duration-300 ${
+            sidebarOpen ? 'pointer-events-none' : 'md:hidden'
           }`}
           aria-label="Toggle sidebar"
         >
