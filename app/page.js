@@ -128,7 +128,7 @@ export default function YouTubeHome() {
     };
     fetchVideos();
     refreshAccessToken();
-  }, [setUser, setIsloggedin]);
+  }, []);
 
   const categories = [
     "All",
