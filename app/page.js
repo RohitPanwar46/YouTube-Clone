@@ -288,7 +288,7 @@ export default function YouTubeHome() {
         {showHamburger ? (
           <aside
             ref={hamburgerRef}
-            className="absolute scrollbar-hide  bg-[#0f0f0f] w-18 md:w-64 z-40 overflow-y-auto"
+            className="absolute scrollbar-hide  bg-[#0f0f0f] w-64 md:w-64 z-40 overflow-y-scroll"
           >
             <div className="py-4">
               <Link
@@ -403,7 +403,7 @@ export default function YouTubeHome() {
               <div className="w-12 h-12 border-4 border-[#303030] border-t-red-500 rounded-full animate-spin"></div>
             </div>
           ) : (
-            <div className="grid relative z-0 scrollbar-hide w-full grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid scrollbar-hide w-full grid-cols-1 gap-4 md:grid-cols-3">
               {videos.map((video) => (
                 <div
                   key={video._id}
