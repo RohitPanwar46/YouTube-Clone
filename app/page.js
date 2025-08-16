@@ -249,9 +249,9 @@ export default function YouTubeHome() {
       <Navbar />
 
       {/* Main Content */}
-      <main className="pt-16 flex">
+      <main className="pt-14 md:pt-16 flex">
         {/* Sidebar  */}
-        <aside className="fixed top-16 bottom-0 bg-[#0f0f0f] w-20 md:w-64 z-40 overflow-y-auto">
+        <aside className="fixed top-14 md:top-16 bottom-0 bg-[#0f0f0f] w-18 md:w-64 z-40 overflow-y-auto">
           <div className="py-4">
             {sidebarItems.map((item, index) =>
               item.separator ? (
@@ -259,7 +259,7 @@ export default function YouTubeHome() {
               ) : item.title ? (
                 <div
                   key={index}
-                  className="px-6 py-2 text-xs uppercase text-[#aaa] tracking-wider"
+                  className="hidden md:inline px-6 py-2 text-xs uppercase text-[#aaa] tracking-wider"
                 >
                   {item.title}
                 </div>
