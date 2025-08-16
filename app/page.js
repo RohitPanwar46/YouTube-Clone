@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import { apiRequest, API_ENDPOINTS } from "./lib/api";
 import Image from "next/image";
@@ -74,7 +74,8 @@ const Icons = () => (
 export default function YouTubeHome() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
-  const { setUser, setIsloggedin } = useUser();
+  const { setUser, setIsloggedin, showHamburger, setShowHamburger } = useUser();
+  const hamburgerRef = useRef(null);
 
   const sidebarItems = [
     { icon: "home", text: "Home", url: "/" },
@@ -129,6 +130,18 @@ export default function YouTubeHome() {
     fetchVideos();
     refreshAccessToken();
   }, [setIsloggedin, setUser]);
+
+  // close hamburger when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (hamburgerRef.current && !hamburgerRef.current.contains(event.target)) {
+        setShowHamburger(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [setShowHamburger]);
 
   const categories = [
     "All",
@@ -242,7 +255,7 @@ export default function YouTubeHome() {
 
   
   return (
-    <div className="min-h-screen bg-[#121212] text-white">
+    <div className="min-h-screen relative bg-[#121212] text-white">
       <Icons />
 
       {/* Navbar Component */}
@@ -251,7 +264,7 @@ export default function YouTubeHome() {
       {/* Main Content */}
       <main className="pt-14 md:pt-16 flex">
         {/* Sidebar  */}
-        <aside className=" scrollbar-hide fixed top-14 md:top-16 bottom-0 bg-[#0f0f0f] w-18 md:w-64 z-40 overflow-y-auto">
+        {showHamburger ? <aside ref={hamburgerRef} className="absolute scrollbar-hide top-14 bottom-0 bg-[#0f0f0f] w-18 md:w-64 z-40 overflow-y-auto">
           <div className="py-4">
             {sidebarItems.map((item, index) =>
               item.separator ? (
@@ -283,7 +296,39 @@ export default function YouTubeHome() {
               )
             )}
           </div>
-        </aside>
+        </aside> : <aside className="hidden md:block scrollbar-hide fixed top-14 md:top-16 bottom-0 bg-[#0f0f0f] w-18 md:w-64 z-40 overflow-y-auto">
+          <div className="py-4">
+            {sidebarItems.map((item, index) =>
+              item.separator ? (
+                <div key={index} className="h-px bg-[#303030] my-3 mx-4"></div>
+              ) : item.title ? (
+                <div
+                  key={index}
+                  className="hidden md:inline px-6 py-2 text-xs uppercase text-[#aaa] tracking-wider"
+                >
+                  {item.title}
+                </div>
+              ) : (
+                <Link
+                  key={index}
+                  href={item.url}
+                  className="flex items-center px-3 md:px-6 py-3 cursor-pointer hover:bg-[#181818] transition-all duration-300 group"
+                >
+                  <div
+                    className={`w-6 mr-4 ${
+                      item.color || "text-white"
+                    } group-hover:text-red-500 transition-colors duration-300`}
+                  >
+                    {getIcon(item.icon)}
+                  </div>
+                  <span className="hidden md:block group-hover:text-white transition-colors duration-300">
+                    {item.text}
+                  </span>
+                </Link>
+              )
+            )}
+          </div>
+        </aside>}
 
         {/* Content Area */}
         <div className="flex-1 p-4 md:p-6 ml-20 md:ml-64">
@@ -310,7 +355,7 @@ export default function YouTubeHome() {
               <div className="w-12 h-12 border-4 border-[#303030] border-t-red-500 rounded-full animate-spin"></div>
             </div>
           ) : (
-            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid scrollbar-hide w-full grid-cols-1 gap-4 md:grid-cols-3">
               {videos.map((video) => (
                 <div
                   key={video._id}
