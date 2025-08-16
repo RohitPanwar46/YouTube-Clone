@@ -108,7 +108,7 @@ const Navbar = () => {
             />
           </button>
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-[#181818] rounded-lg shadow-lg z-50">
+            <div className="absolute right-0 mt-1 w-36 bg-[#181818] rounded-lg shadow-lg z-50">
               <div className="py-2">
                 {isLoggedin ? (
                   <button
