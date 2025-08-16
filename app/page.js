@@ -75,7 +75,7 @@ export default function YouTubeHome() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
   const { setUser, setIsloggedin, showHamburger, setShowHamburger } = useUser();
-  const hamburgerRef = useRef(null);
+  
 
   const sidebarItems = [
     { icon: "home", text: "Home", url: "/" },
@@ -150,20 +150,6 @@ export default function YouTubeHome() {
     refreshAccessToken();
   }, [setIsloggedin, setUser]);
 
-  // close hamburger when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        hamburgerRef.current &&
-        !hamburgerRef.current.contains(event.target)
-      ) {
-        setShowHamburger(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [setShowHamburger]);
 
   const categories = [
     "All",
@@ -285,62 +271,7 @@ export default function YouTubeHome() {
       {/* Main Content */}
       <main className="pt-14 md:pt-16 flex">
         {/* Sidebar  */}
-        {showHamburger ? (
-          <aside
-            ref={hamburgerRef}
-            className="fixed scrollbar-hide top-0 left-0 bg-[#0f0f0f] w-54 md:w-64 z-40 overflow-y-scroll"
-          >
-            <div className=" pl-0.5 pb-4 pt-1.5">
-              <Link
-                href={"/"}
-                className="flex items-center text-xl md:text-2xl font-bold flex-shrink-0"
-              >
-                <svg
-                  className="w-8 h-8 text-red-600 mr-2"
-                  fill="currentColor"
-                  viewBox="0 0 576 512"
-                  aria-label="YouTube"
-                >
-                  <path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z" />
-                </svg>
-                <span className="">YouTube</span>
-              </Link>
-              {sidebarItems.map((item, index) =>
-                item.separator ? (
-                  <div
-                    key={index}
-                    className="h-px bg-[#303030] my-3 mx-4"
-                  ></div>
-                ) : item.title ? (
-                  <div
-                    key={index}
-                    className="px-6 py-2 text-xs uppercase text-[#aaa] tracking-wider"
-                  >
-                    {item.title}
-                  </div>
-                ) : (
-                  <Link
-                    key={index}
-                    href={item.url}
-                    className="flex items-center px-3 md:px-6 py-3 cursor-pointer hover:bg-[#181818] transition-all duration-300 group"
-                  >
-                    <div
-                      className={`w-6 mr-4 ${
-                        item.color || "text-white"
-                      } group-hover:text-red-500 transition-colors duration-300`}
-                    >
-                      {getIcon(item.icon)}
-                    </div>
-                    <span className="group-hover:text-white transition-colors duration-300">
-                      {item.text}
-                    </span>
-                  </Link>
-                )
-              )}
-            </div>
-          </aside>
-        ) : (
-          <aside className="hidden md:block scrollbar-hide fixed top-14 md:top-16 bottom-0 bg-[#0f0f0f] w-18 md:w-64 z-40 overflow-y-auto">
+        <aside className="hidden md:block scrollbar-hide fixed top-14 md:top-16 bottom-0 bg-[#0f0f0f] w-18 md:w-64 z-40 overflow-y-auto">
             <div className="py-4">
               {sidebarItems.map((item, index) =>
                 item.separator ? (
@@ -376,7 +307,6 @@ export default function YouTubeHome() {
               )}
             </div>
           </aside>
-        )}
 
         {/* Content Area */}
         <div className="flex-1 p-4 md:p-6 md:ml-64">

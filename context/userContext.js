@@ -6,7 +6,6 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoggedin, setIsloggedin] = useState(false);
-  const [showHamburger, setShowHamburger] = useState(false);
 
   // Load user from localStorage on mount
   useEffect(() => {
@@ -26,7 +25,7 @@ export const UserProvider = ({ children }) => {
   }, [user]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, isLoggedin, setIsloggedin, showHamburger, setShowHamburger }}>
+    <UserContext.Provider value={{ user, setUser, isLoggedin, setIsloggedin }}>
       {children}
     </UserContext.Provider>
   );
