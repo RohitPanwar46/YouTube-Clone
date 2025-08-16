@@ -120,7 +120,6 @@ export default function YouTubeHome() {
           credentials: "include",
         });
         setIsloggedin(true);
-        setUser(result.data.user);
       } catch (error) {
         console.error("Error refreshing access token:", error);
         setUser(null);
