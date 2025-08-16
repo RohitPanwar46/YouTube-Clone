@@ -70,7 +70,7 @@ const Navbar = () => {
   }
 
   return (
-    <header className="fixed w-full top-0 left-0 right-0 h-10 md:h-16 bg-[#0f0f0f] shadow-lg z-30 flex items-center justify-between px-4">
+    <header className="fixed w-full top-0 left-0 right-0 h-12 md:h-16 bg-[#0f0f0f] shadow-lg z-30 flex items-center justify-between px-4">
       {/* Mobile Search Bar (Visible only when active on mobile) */}
       {showMobileSearch ? (
         <div className="flex items-center w-full">
@@ -105,7 +105,7 @@ const Navbar = () => {
           {/* Left Side - Logo */}
           <div className="flex items-center">
             <svg
-              className="md:hidden w-8 h-8 text-slate-100 mr-2"
+              className="md:hidden pt-1 w-8 h-8 text-slate-100 mr-2"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
               stroke="currentColor"
