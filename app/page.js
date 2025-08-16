@@ -85,7 +85,7 @@ export default function YouTubeHome() {
     { icon: "photo-video", text: "Playlists", url: "/playlists" },
     { icon: "history", text: "History", url: "/history" },
     { icon: "clock", text: "Watch later", url: "/playlists/watch-later" },
-    { icon: "thumbs-up", text: "Liked videos", url: "/liked-videos" },
+    { icon: "thumbs-up", text: "Liked videos", url: "/playlists/liked-videos" },
     { separator: true },
     { title: "Subscriptions" },
     { icon: "circle", color: "text-red-400", text: "Tech Insider", url: "/subscriptions/tech-insider" },
