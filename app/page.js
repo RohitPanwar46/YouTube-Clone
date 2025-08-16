@@ -251,7 +251,7 @@ export default function YouTubeHome() {
       {/* Main Content */}
       <main className="pt-16 flex">
         {/* Sidebar  */}
-        <aside className="fixed top-16 bottom-0 bg-[#0f0f0f] w-20 z-40 overflow-y-auto">
+        <aside className="fixed top-16 bottom-0 bg-[#0f0f0f] w-20 md:w-64 z-40 overflow-y-auto">
           <div className="py-4">
             {sidebarItems.map((item, index) =>
               item.separator ? (
@@ -267,7 +267,7 @@ export default function YouTubeHome() {
                 <Link
                   key={index}
                   href={item.url}
-                  className="flex items-center px-3 py-3 cursor-pointer hover:bg-[#181818] transition-all duration-300 group md:px-6"
+                  className="flex items-center px-3 md:px-6 py-3 cursor-pointer hover:bg-[#181818] transition-all duration-300 group"
                 >
                   <div
                     className={`w-6 mr-4 ${
@@ -276,6 +276,9 @@ export default function YouTubeHome() {
                   >
                     {getIcon(item.icon)}
                   </div>
+                  <span className="hidden md:block group-hover:text-white transition-colors duration-300">
+                    {item.text}
+                  </span>
                 </Link>
               )
             )}
@@ -283,7 +286,7 @@ export default function YouTubeHome() {
         </aside>
 
         {/* Content Area */}
-        <div className="flex-1 p-4 md:p-6 ml-20">
+        <div className="flex-1 p-4 md:p-6 ml-20 md:ml-64">
           {/* Category Navigation */}
           <div className="flex overflow-x-auto pb-4 mb-6 scrollbar-hide">
             {categories.map((category) => (
