@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import { apiRequest, API_ENDPOINTS } from "./lib/api";
 import Image from "next/image";
@@ -74,7 +74,9 @@ const Icons = () => (
 export default function YouTubeHome() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { setUser, setIsloggedin } = useUser();
+  const sidebarRef = useRef(null);
 
   const sidebarItems = [
     { icon: "home", text: "Home", url: "/" },
@@ -128,7 +130,7 @@ export default function YouTubeHome() {
     };
     fetchVideos();
     refreshAccessToken();
-  }, []);
+  }, [setIsloggedin, setUser]);
 
   const categories = [
     "All",
@@ -240,6 +242,19 @@ export default function YouTubeHome() {
     }
   };
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setSidebarOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#121212] text-white">
       <Icons />
@@ -249,8 +264,26 @@ export default function YouTubeHome() {
 
       {/* Main Content */}
       <main className="pt-16 flex">
-        {/* Sidebar  */}
-        <aside className="fixed top-16 bottom-0 bg-[#0f0f0f] w-64 z-40 overflow-y-auto">
+        {/* Sidebar Toggle for Mobile */}
+        <button 
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className={`fixed bottom-4 left-4 z-30 p-3 bg-red-600 rounded-full shadow-lg transition-all duration-300 ${
+            sidebarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100 md:hidden'
+          }`}
+          aria-label="Toggle sidebar"
+        >
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 448 512">
+            <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" />
+          </svg>
+        </button>
+
+        {/* Sidebar */}
+        <aside 
+          ref={sidebarRef}
+          className={`fixed top-16 bottom-0 bg-[#0f0f0f] w-64 z-40 overflow-y-auto transition-all duration-300 md:translate-x-0 ${
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } md:static`}
+        >
           <div className="py-4">
             {sidebarItems.map((item, index) =>
               item.separator ? (
@@ -285,14 +318,14 @@ export default function YouTubeHome() {
         </aside>
 
         {/* Content Area */}
-        <div className="flex-1 p-4 md:p-6 ml-64">
+        <div className="flex-1 p-4 md:p-6 md:ml-64">
           {/* Category Navigation */}
-          <div className="flex overflow-x-auto pb-4 mb-6 scrollbar-hide">
+          <div className="flex overflow-x-auto pb-4 mb-6 scrollbar-hide space-x-2">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => handleCategoryChange(category)}
-                className={`whitespace-nowrap px-4 py-2 mr-3 rounded-full transition-all duration-300 ${
+                className={`whitespace-nowrap px-3 py-1.5 text-sm md:text-base md:px-4 md:py-2 rounded-full transition-all duration-300 ${
                   activeCategory === category
                     ? "bg-white text-black"
                     : "bg-[#202020] hover:bg-[#303030]"
@@ -309,7 +342,7 @@ export default function YouTubeHome() {
               <div className="w-12 h-12 border-4 border-[#303030] border-t-red-500 rounded-full animate-spin"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
               {videos.map((video) => (
                 <div
                   key={video._id}
