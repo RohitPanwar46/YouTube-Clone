@@ -56,14 +56,7 @@ const Navbar = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-[#0f0f0f] shadow-lg z-50 flex items-center justify-between px-4">
-      {/* Left Side - Logo and Hamburger */}
-      <div className="flex items-center gap-2 md:gap-4">
-        <button className="md:hidden p-2 rounded-full hover:bg-[#303030]">
-          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 448 512">
-            <path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" />
-          </svg>
-        </button>
-        
+      <div className="flex items-center gap-2 md:hi md:gap-4">
         <Link href={"/"} className="flex items-center text-2xl font-bold">
           <svg
             className="w-8 h-8 text-red-600 mr-2"

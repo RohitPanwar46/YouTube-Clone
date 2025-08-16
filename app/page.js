@@ -267,7 +267,7 @@ export default function YouTubeHome() {
         {/* Sidebar Toggle for Mobile */}
         <button 
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className={`fixed bottom-4 left-4 z-30 p-3 bg-red-600 rounded-full shadow-lg transition-all duration-300 ${
+          className={`fixed top-4 left-4 z-30 p-3 rounded-full shadow-lg transition-all duration-300 ${
             sidebarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100 md:hidden'
           }`}
           aria-label="Toggle sidebar"
@@ -318,7 +318,7 @@ export default function YouTubeHome() {
         </aside>
 
         {/* Content Area */}
-        <div className="flex-1 p-4 md:p-6 md:ml-64">
+        <div className="flex-1 p-4 md:p-6 md:ml-10">
           {/* Category Navigation */}
           <div className="flex overflow-x-auto pb-4 mb-6 scrollbar-hide space-x-2">
             {categories.map((category) => (
