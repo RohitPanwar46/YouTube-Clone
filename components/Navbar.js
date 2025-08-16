@@ -56,7 +56,7 @@ const Navbar = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-[#0f0f0f] shadow-lg z-50 flex items-center justify-between px-4">
-      <div className="flex hidden md:inline items-center gap-2 md:hi md:gap-4">
+      <div className="md:flex hidden items-center gap-2 md:hi md:gap-4">
         <Link href={"/"} className="flex items-center text-2xl font-bold">
           <svg
             className="w-8 h-8 text-red-600 mr-2"
