@@ -32,7 +32,7 @@ const Page = () => {
         const data = await apiRequest(endpoint, { method: "GET" });
 
         console.log("DEBUG: api response ->", data);
-        setVideos(data || []);
+        setVideos(data.data.videos || []);
       } catch (error) {
         console.error("Error fetching videos:", error);
         setVideos([]);
@@ -44,6 +44,34 @@ const Page = () => {
     fetchVideos();
   }, [title]);
 
+  function timeAgo(date) {
+    const now = new Date();
+    const seconds = Math.floor((now - new Date(date)) / 1000);
+
+    let interval = Math.floor(seconds / 31536000);
+    if (interval >= 1) return `${interval}y ago`;
+
+    interval = Math.floor(seconds / 2592000);
+    if (interval >= 1) return `${interval}mo ago`;
+
+    interval = Math.floor(seconds / 86400);
+    if (interval >= 1) return `${interval}d ago`;
+
+    interval = Math.floor(seconds / 3600);
+    if (interval >= 1) return `${interval}h ago`;
+
+    interval = Math.floor(seconds / 60);
+    if (interval >= 1) return `${interval}m ago`;
+
+    return "Just now";
+  }
+
+  // formating duration
+  function formatDuration(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  }
 
   return (
     <div>
