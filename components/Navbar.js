@@ -83,7 +83,7 @@ const Navbar = () => {
               <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
             </svg>
           </button>
-          <form onSubmit={handleSubmit} className="flex flex-1 pt-1.5">
+          <form onSubmit={handleSubmit} className="relative flex flex-1 pt-1.5">
             <input
               ref={searchInputRef}
               onChange={handleChange}
@@ -93,6 +93,11 @@ const Navbar = () => {
               className="w-full bg-[#181818] text-white py-2 px-4 rounded-full border border-[#303030] focus:border-red-500 focus:outline-none"
               aria-label="Search"
             />
+            <button type="submit" className="absolute right-2 top-1 h-full px-4 bg-[#202020] rounded-r-full hover:bg-[#303030] transition-all duration-300">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 512 512">
+                <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
+              </svg>
+            </button>
           </form>
         </div>
       ) : (
