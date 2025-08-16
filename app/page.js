@@ -251,7 +251,7 @@ export default function YouTubeHome() {
       {/* Main Content */}
       <main className="pt-14 md:pt-16 flex">
         {/* Sidebar  */}
-        <aside className="fixed top-14 md:top-16 bottom-0 bg-[#0f0f0f] w-18 md:w-64 z-40 overflow-y-auto">
+        <aside className=" scrollbar-hide fixed top-14 md:top-16 bottom-0 bg-[#0f0f0f] w-18 md:w-64 z-40 overflow-y-auto">
           <div className="py-4">
             {sidebarItems.map((item, index) =>
               item.separator ? (
