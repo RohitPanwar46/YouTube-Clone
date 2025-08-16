@@ -54,7 +54,7 @@ const Navbar = () => {
       {/* Center - Search Bar */}
       <div className="flex-1 max-w-lg sm:max-w-xl md:max-w-2xl mx-8 flex justify-center">
         <div className="flex w-full max-w-xl">
-          <form onSubmit={handleSubmit} className="flex w-full">
+          <form onSubmit={handleSubmit} className="flex md:w-full w-[60%]">
             <input
               onChange={handleChange}
               type="text"
