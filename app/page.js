@@ -272,7 +272,7 @@ export default function YouTubeHome() {
               ) : item.title ? (
                 <div
                   key={index}
-                  className="hidden md:inline px-6 py-2 text-xs uppercase text-[#aaa] tracking-wider"
+                  className="px-6 py-2 text-xs uppercase text-[#aaa] tracking-wider"
                 >
                   {item.title}
                 </div>
@@ -289,7 +289,7 @@ export default function YouTubeHome() {
                   >
                     {getIcon(item.icon)}
                   </div>
-                  <span className="hidden md:block group-hover:text-white transition-colors duration-300">
+                  <span className="group-hover:text-white transition-colors duration-300">
                     {item.text}
                   </span>
                 </Link>
@@ -331,7 +331,7 @@ export default function YouTubeHome() {
         </aside>}
 
         {/* Content Area */}
-        <div className="flex-1 p-4 md:p-6 ml-20 md:ml-64">
+        <div className="flex-1 p-4 md:p-6 md:ml-64">
           {/* Category Navigation */}
           <div className="hidden md:flex overflow-x-auto pb-4 mb-6 scrollbar-hide">
             {categories.map((category) => (
