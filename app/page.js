@@ -288,7 +288,7 @@ export default function YouTubeHome() {
         {showHamburger ? (
           <aside
             ref={hamburgerRef}
-            className="absolute scrollbar-hide top-0 bg-[#0f0f0f] w-54 md:w-64 z-40 overflow-y-scroll"
+            className="fixed scrollbar-hide top-0 left-0 bg-[#0f0f0f] w-54 md:w-64 z-40 overflow-y-scroll"
           >
             <div className=" pl-0.5 pb-4 pt-1.5">
               <Link
