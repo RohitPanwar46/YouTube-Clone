@@ -118,7 +118,7 @@ const Navbar = () => {
           </div>
         )}
         <Image
-          src={user?.avatar || "/default-avatar.png"}
+          src={isLoggedin ? user?.avatar : "/default-avatar.png"}
           className="w-8 h-8 rounded-full"
           alt="User Avatar"
           width={32}
