@@ -276,7 +276,7 @@ export default function YouTubeHome() {
   };
 
   return (
-    <div className="min-h-screen relative bg-[#121212] text-white">
+    <div className="max-h-screen overflow-y-scroll relative bg-[#121212] text-white">
       <Icons />
 
       {/* Navbar Component */}
@@ -288,7 +288,7 @@ export default function YouTubeHome() {
         {showHamburger ? (
           <aside
             ref={hamburgerRef}
-            className="absolute scrollbar-hide  bg-[#0f0f0f] w-64 md:w-64 z-40 overflow-y-scroll"
+            className="absolute scrollbar-hide  bg-[#0f0f0f] w-54 md:w-64 z-40 overflow-y-scroll"
           >
             <div className="py-4">
               <Link
