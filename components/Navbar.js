@@ -106,7 +106,6 @@ const Navbar = () => {
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
-              {...props}
               onClick={() => setShowHamburger(!showHamburger)}
             >
               <path d="M3 6h18M3 12h18M3 18h18" />
