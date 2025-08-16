@@ -290,7 +290,7 @@ export default function YouTubeHome() {
             ref={hamburgerRef}
             className="absolute scrollbar-hide top-0 bg-[#0f0f0f] w-54 md:w-64 z-40 overflow-y-scroll"
           >
-            <div className="py-4">
+            <div className=" pl-0.5 pb-4 pt-1.5">
               <Link
                 href={"/"}
                 className="flex items-center text-xl md:text-2xl font-bold flex-shrink-0"
