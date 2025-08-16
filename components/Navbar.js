@@ -10,9 +10,10 @@ import { useRouter } from "next/navigation";
 const Navbar = () => {
   const { user, isLoggedin, setIsloggedin, setUser } = useUser();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter();
 
-  function handleSubmit(event){
+  function handleSubmit(event) {
     event.preventDefault();
     router.push(`/search?title=${searchQuery}`);
   }
@@ -30,6 +31,7 @@ const Navbar = () => {
       console.log("Logout successful:", data);
       setIsloggedin(false);
       setUser(null);
+      setIsDropdownOpen(false);
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -74,8 +76,8 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Right Side - Action Icons */}
-      <div className="flex items-center gap-4">
+      {/* Right Side - Action Icons and Avatar Dropdown */}
+      <div className="flex items-center gap-4 relative">
         <button className="p-2 rounded-full hover:bg-[#303030] transition-all duration-300">
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 576 512">
             <path d="M0 128C0 92.7 28.7 64 64 64H320c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128zM559.1 99.8c10.4 5.6 16.9 16.4 16.9 28.2V384c0 11.8-6.5 22.6-16.9 28.2s-23 5-32.9-1.6l-96-64L416 337.1V320 192 174.9l14.2-9.5 96-64c9.8-6.5 22.4-7.2 32.9-1.6z" />
@@ -90,41 +92,53 @@ const Navbar = () => {
           </span>
         </button>
 
-        {/* Auth Buttons */}
-
-        {isLoggedin ? (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200"
-            >
-              Logout
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="px-4 py-2 text-sm font-medium text-white hover:text-red-400 transition-colors duration-200"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/register"
-              className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200"
-            >
-              Sign Up
-            </Link>
-          </div>
-        )}
-        <Image
-          src={isLoggedin ? user?.avatar : "/default-avatar.png"}
-          className="w-8 h-8 rounded-full"
-          alt="User Avatar"
-          width={32}
-          height={32}
-          priority
-        />
+        {/* Avatar Dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="focus:outline-none"
+          >
+            <Image
+              src={isLoggedin ? user?.avatar : "/default-avatar.png"}
+              className="w-8 h-8 rounded-full"
+              alt="User Avatar"
+              width={32}
+              height={32}
+              priority
+            />
+          </button>
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-[#181818] rounded-lg shadow-lg z-50">
+              <div className="py-2">
+                {isLoggedin ? (
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#303030] transition-colors duration-200"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="block px-4 py-2 text-sm text-white hover:bg-[#303030] transition-colors duration-200"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/register"
+                      className="block px-4 py-2 text-sm text-white hover:bg-[#303030] transition-colors duration-200"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
