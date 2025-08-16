@@ -286,7 +286,7 @@ export default function YouTubeHome() {
         </aside>
 
         {/* Content Area */}
-        <div className="flex-1 p-4 md:p-6 ml-20 md:ml-64">
+        <div className="hidden md:inline flex-1 p-4 md:p-6 ml-20 md:ml-64">
           {/* Category Navigation */}
           <div className="flex overflow-x-auto pb-4 mb-6 scrollbar-hide">
             {categories.map((category) => (
