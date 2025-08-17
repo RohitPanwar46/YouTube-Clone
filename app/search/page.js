@@ -74,7 +74,7 @@ const Page = () => {
   }
 
   return (
-    <div className="min-h-screen mx-4 mt-8 md:m-20">
+    <div className="min-h-screen mx-4 mt-12 md:m-20">
       <Navbar />
       {/* Video Grid */}
       {isLoading ? (
