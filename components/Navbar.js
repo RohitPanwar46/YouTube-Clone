@@ -251,7 +251,7 @@ const Navbar = () => {
     <header className="fixed w-full top-0 left-0 right-0 h-12 md:h-16 bg-[#0f0f0f] shadow-lg z-30 flex items-center justify-between px-4">
       <Icons/>
       {/* hamburger menu */}
-      <aside
+      {showHamburger && <aside
             ref={hamburgerRef}
             className="fixed scrollbar-hide top-0 left-0 bg-[#0f0f0f] w-54 md:w-64 z-40 overflow-y-scroll"
           >
@@ -303,7 +303,7 @@ const Navbar = () => {
                 )
               )}
             </div>
-          </aside>
+          </aside>}
 
       {/* Mobile Search Bar (Visible only when active on mobile) */}
       {showMobileSearch ? (
