@@ -74,7 +74,7 @@ const Page = () => {
   }
 
   return (
-    <div className="min-h-screen m-20">
+    <div className="min-h-screen m-4 md:m-20">
       <Navbar />
       {/* Video Grid */}
       {isLoading ? (
@@ -82,7 +82,7 @@ const Page = () => {
           <div className="w-12 h-12 border-4 border-[#303030] border-t-red-500 rounded-full animate-spin"></div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {videos.map((video) => (
             <div
               key={video._id}
