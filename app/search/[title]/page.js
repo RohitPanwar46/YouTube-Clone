@@ -17,7 +17,6 @@ const Page = ({params}) => {
     const fetchVideos = async () => {
       setIsLoading(true);
       try {
-        console.log("DEBUG: title value ->",title);
 
         if (!title) {
           // no title — nothing to fetch
@@ -29,10 +28,8 @@ const Page = ({params}) => {
         const query = decodeURIComponent(title);
         const endpoint = `/api/v1/videos?query=${query}`; // or full backend URL
 
-        console.log("DEBUG: calling API ->", endpoint);
         const data = await apiRequest(endpoint, { method: "GET" });
 
-        console.log("DEBUG: api response ->", data);
         setVideos(data.data.videos || []);
       } catch (error) {
         console.error("Error fetching videos:", error);

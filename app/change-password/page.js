@@ -45,13 +45,12 @@ const ChangePasswordPage = () => {
         method: 'POST',
         body: JSON.stringify(formData)
       });
-      console.log('Password changed successfully:', response);
+      console.log('Password changed successfully:', response); // Todo: add notification on side when password is changed
     } catch (error) {
       setError('Failed to change password. Please try again later.');
       console.error('Password change error:', error);
       return;
     }
-    console.log('Password change submitted', formData);
     router.push('/'); // Redirect after successful change
   };
 
