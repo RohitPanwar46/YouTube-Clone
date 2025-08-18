@@ -1,22 +1,23 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { apiRequest } from "../lib/api";
+import { apiRequest } from "../../lib/api";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 
-const Page = () => {
+const Page = ({params}) => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const searchParams = useSearchParams();
-  const title = searchParams?.get("title") || ""; // safe
+  const { title } = React.use(params); // assuming title is passed as a URL parameter
+  // const searchParams = useSearchParams();
+  // const title = searchParams?.get("title") || ""; // safe
 
   useEffect(() => {
     const fetchVideos = async () => {
       setIsLoading(true);
       try {
-        console.log("DEBUG: title value ->", title);
+        console.log("DEBUG: title value ->",title);
 
         if (!title) {
           // no title — nothing to fetch
@@ -25,7 +26,7 @@ const Page = () => {
         }
 
         // ensure correct url (leading slash) and encode the query param
-        const query = encodeURIComponent(title);
+        const query = decodeURIComponent(title);
         const endpoint = `/api/v1/videos?query=${query}`; // or full backend URL
 
         console.log("DEBUG: calling API ->", endpoint);

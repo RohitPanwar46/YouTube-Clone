@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import {UserProvider} from '@/context/userContext'
-import { Suspense } from "react";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,9 +26,7 @@ export default function RootLayout({ children }) {
         suppressHydrationWarning={true}
       >
         <UserProvider>
-          <Suspense fallback={<div>Loading...</div>}>
             {children}
-          </Suspense>
         </UserProvider>
       </body>
     </html>

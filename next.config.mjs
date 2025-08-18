@@ -12,7 +12,6 @@ const nextConfig = {
         hostname: 'res.cloudinary.com',
       },
     ],
-    unoptimized: false, // Disable Next.js image optimization
   },
 };
 

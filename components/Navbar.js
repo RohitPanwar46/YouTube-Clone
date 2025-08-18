@@ -223,7 +223,7 @@ const Navbar = () => {
   function handleSubmit(event) {
     event.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/search?title=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/search/${encodeURIComponent(searchQuery.trim())}`);
       setShowMobileSearch(false);
     }
   }
