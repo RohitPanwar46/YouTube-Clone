@@ -2,6 +2,7 @@
 
 // Backend API base URL - update this to match your backend
 export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URI;
+console.log('Backend API URL:', BACKEND_URL);
 
 
 // API endpoints
