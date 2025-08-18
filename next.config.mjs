@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+
   images: {
     remotePatterns: [
       {
@@ -12,6 +12,7 @@ const nextConfig = {
         hostname: 'res.cloudinary.com',
       },
     ],
+    unoptimized: false, // Disable Next.js image optimization
   },
 };
 

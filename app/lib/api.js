@@ -1,7 +1,8 @@
 // API Configuration and Utility Functions
 
 // Backend API base URL - update this to match your backend
-export const BACKEND_URL = process.env.BACKEND_URL || "https://project-youtube-backend-1.onrender.com";
+export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URI;
+
 
 // API endpoints
 export const API_ENDPOINTS = {
