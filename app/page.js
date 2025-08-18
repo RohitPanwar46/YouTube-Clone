@@ -5,6 +5,7 @@ import { apiRequest, API_ENDPOINTS } from "./lib/api";
 import Image from "next/image";
 import { useUser } from "@/context/userContext";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // Icons component
 const Icons = () => (
@@ -74,8 +75,8 @@ const Icons = () => (
 export default function YouTubeHome() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
-  const { setUser, setIsloggedin, showHamburger, setShowHamburger } = useUser();
-  
+  const { setUser, setIsloggedin } = useUser();
+  const router = useRouter();
 
   const sidebarItems = [
     { icon: "home", text: "Home", url: "/" },
@@ -199,6 +200,10 @@ export default function YouTubeHome() {
     setIsLoading(true);
     setTimeout(() => setIsLoading(false), 800);
   };
+
+  function handleVideoClick(videoId) {
+    router.push(`/player/${videoId}`);
+  }
 
   const getIcon = (iconName) => {
     switch (iconName) {
@@ -337,6 +342,7 @@ export default function YouTubeHome() {
               {videos.map((video) => (
                 <div
                   key={video._id}
+                  onClick={() => handleVideoClick(video._id)}
                   className="bg-[#181818] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group"
                 >
                   <div className="relative">

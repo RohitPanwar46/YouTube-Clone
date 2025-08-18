@@ -4,14 +4,13 @@ import React, { useState, useEffect } from "react";
 import { apiRequest } from "../../lib/api";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
-// import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const Page = ({params}) => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { title } = React.use(params); // assuming title is passed as a URL parameter
-  // const searchParams = useSearchParams();
-  // const title = searchParams?.get("title") || ""; // safe
+  const router = useRouter();
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -71,6 +70,10 @@ const Page = ({params}) => {
     return `${m}:${s.toString().padStart(2, "0")}`;
   }
 
+  function handleVideoClick(videoId) {
+    router.push(`/player/${videoId}`); // navigate to player page
+  }
+
   return (
     <div className="min-h-screen mx-4 mt-16 md:m-20">
       <Navbar />
@@ -84,6 +87,7 @@ const Page = ({params}) => {
           {videos.map((video) => (
             <div
               key={video._id}
+              onClick={() => handleVideoClick(video._id)}
               className="bg-[#181818] rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group"
             >
               <div className="relative">
