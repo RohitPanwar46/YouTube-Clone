@@ -2,18 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useUser } from "@/context/userContext";
 import { useState, useEffect, useRef } from "react";
 import { apiRequest, API_ENDPOINTS } from "../app/lib/api";
 import { useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 
 const Navbar = () => {
-  const {
-    user,
-    isLoggedin,
-    setIsloggedin,
-    setUser
-  } = useUser();
   const [searchQuery, setSearchQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
@@ -22,6 +16,9 @@ const Navbar = () => {
   const dropdownRef = useRef(null);
   const searchInputRef = useRef(null);
   const hamburgerRef = useRef(null);
+  const { data: session } = useSession();
+
+  console.log("Session:", session);
 
   const sidebarItems = [
     { icon: "home", text: "Home", url: "/" },
@@ -234,21 +231,26 @@ const Navbar = () => {
 
   async function handleLogout() {
     try {
-      await apiRequest(API_ENDPOINTS.LOGOUT, {
+      const response = await apiRequest(API_ENDPOINTS.LOGOUT,{
         method: "POST",
-        credentials: "include",
+        credentials: "include"
       });
-      setIsloggedin(false);
-      setUser(null);
-      setIsDropdownOpen(false);
-      router.push("/");
+
+      if (!response.ok) {
+        throw new Error("Failed to log out");
+      }
+
+      // Successfully logged out
+      console.log(response.message);
     } catch (error) {
       console.error("Error logging out:", error);
     }
+    signOut({ callbackUrl: "/" });
   }
 
   return (
     <header className="fixed w-full top-0 left-0 right-0 h-12 md:h-16 bg-[#0f0f0f] shadow-lg z-30 flex items-center justify-between px-4">
+    
       <Icons/>
       {/* hamburger menu */}
       {showHamburger && <aside
@@ -409,25 +411,6 @@ const Navbar = () => {
               </svg>
             </button>
 
-            {/* Action Buttons - Hidden on mobile when search is active */}
-            <div className="hidden sm:flex items-center gap-2 md:gap-4">
-              <button
-                className="p-2 rounded-full hover:bg-[#303030] relative transition-all duration-300"
-                aria-label="Notifications"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 448 512"
-                >
-                  <path d="M224 0c-17.7 0-32 14.3-32 32V49.9C119.5 61.4 64 124.2 64 200v33.4c0 45.4-15.5 89.5-43.8 124.9L5.3 377c-5.8 7.2-6.9 17.1-2.9 25.4S14.8 416 24 416H424c9.2 0 17.6-5.3 21.6-13.6s2.9-18.2-2.9-25.4l-14.9-18.6C399.5 322.9 384 278.8 384 233.4V200c0-75.8-55.5-138.6-128-150.1V32c0-17.7-14.3-32-32-32zm0 96h8c57.4 0 104 46.6 104 104v33.4c0 47.9 13.9 94.6 39.7 134.6H72.3C98.1 328 112 281.3 112 233.4V200c0-57.4 46.6-104 104-104h8zm64 352H224 160c0 17 6.7 33.3 18.7 45.3S207 512 224 512s33.3-6.7 45.3-18.7s18.7-28.3 18.7-45.3z" />
-                </svg>
-                <span className="absolute top-0 right-0 bg-red-500 text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                  9+
-                </span>
-              </button>
-            </div>
-
             {/* Avatar Dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button
@@ -436,7 +419,7 @@ const Navbar = () => {
                 aria-label="User menu"
               >
                 <Image
-                  src={isLoggedin ? user?.avatar : "/default-avatar.png"}
+                  src={session?.user.avatar || "/default-avatar.png"}
                   className="w-7 h-7 md:w-8 md:h-8 rounded-full"
                   alt="User Avatar"
                   width={32}
@@ -447,7 +430,7 @@ const Navbar = () => {
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-36 bg-[#181818] rounded-lg shadow-lg z-50 border border-[#303030]">
                   <div className="py-2">
-                    {isLoggedin ? (
+                    {session ? (
                       <button
                         onClick={handleLogout}
                         className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#303030] transition-colors duration-200"

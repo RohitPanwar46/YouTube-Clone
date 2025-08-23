@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import { apiRequest, API_ENDPOINTS } from "./lib/api";
 import Image from "next/image";
-import { useUser } from "@/context/userContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -75,7 +74,6 @@ const Icons = () => (
 export default function YouTubeHome() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
-  const { setUser, setIsloggedin } = useUser();
   const router = useRouter();
 
   const sidebarItems = [
@@ -134,22 +132,8 @@ export default function YouTubeHome() {
         setIsLoading(false);
       }
     };
-    const refreshAccessToken = async () => {
-      try {
-        const result = await apiRequest(API_ENDPOINTS.REFRESH_ACCESS_TOKEN, {
-          method: "POST",
-          credentials: "include",
-        });
-        setIsloggedin(true);
-      } catch (error) {
-        console.error("Error refreshing access token:", error);
-        setUser(null);
-        setIsloggedin(false);
-      }
-    };
     fetchVideos();
-    refreshAccessToken();
-  }, [setIsloggedin, setUser]);
+  }, []);
 
 
   const categories = [

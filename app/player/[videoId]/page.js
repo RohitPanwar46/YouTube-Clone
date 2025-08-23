@@ -3,8 +3,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FiThumbsUp, FiThumbsDown, FiShare2, FiSave, FiMoreHorizontal, 
   FiMessageSquare, FiSend, FiEdit2, FiTrash2, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { apiRequest } from '@/app/lib/api';
-import { useUser } from '@/context/userContext';
 import Navbar from '@/components/Navbar';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 const Player = ({ params }) => {
   const { videoId } = React.use(params);
@@ -19,10 +21,10 @@ const Player = ({ params }) => {
   const [isDisliked, setIsDisliked] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
-  const [dislikeCount, setDislikeCount] = useState(0);
   const [showAllDescription, setShowAllDescription] = useState(false);
   const videoRef = useRef(null);
-  const { user } = useUser();
+  const router = useRouter();
+  const {data: session} = useSession();
 
   // Fetch video details
   useEffect(() => {
@@ -30,8 +32,6 @@ const Player = ({ params }) => {
       try {
         const response = await apiRequest(`/api/v1/videos/${videoId}`, { method: "GET" });
         setVideo(response.data);
-        setLikeCount(response.data.likes || 0);
-        setDislikeCount(response.data.dislikes || 0);
         console.log("Video fetched:", response.data);
       } catch (error) {
         console.error("Error fetching video:", error);
@@ -40,6 +40,23 @@ const Player = ({ params }) => {
 
     fetchVideo();
   }, [videoId]);
+
+  // Fetch likes count
+  useEffect(() => {
+    const fetchLikes = async () => {
+      try {
+        const userId = session ? session?.user?.id : null;
+        const response = await apiRequest(`/api/v1/likes/count/${videoId}?userId=${userId}`, { method: "GET"});
+        console.log("Likes count response:", response);
+        setIsLiked(response.data.likedByUser);
+        setLikeCount(response.data.likesCount);
+      } catch (error) {
+        console.error("Error fetching likes:", error);
+      }
+    };
+
+    fetchLikes();
+  }, [videoId, session]);
 
   // Fetch comments
   useEffect(() => {
@@ -61,12 +78,37 @@ const Player = ({ params }) => {
 
   // Toggle like video
   const handleLike = async () => {
-      setIsLiked(!isLiked);
+    if (isDisliked) {
+      setIsDisliked(false);
+    }
+      try {
+        const response = await apiRequest(`/api/v1/likes/toggle/v/${videoId}`, {
+          method: "POST",
+          credentials: "include"
+        });
+        if (response.data === "liked") {
+          setIsLiked(true);
+          setLikeCount(likeCount + 1);
+        } else {
+          setIsLiked(false);
+          setLikeCount(likeCount - 1);
+        }
+      } catch (error) {
+        if (error.message === "Unauthorized reqest"){
+          router.push('/login');
+        }
+        console.error("Error liking video:", error);
+      }
   };
 
   // Toggle dislike video
   const handleDislike = async () => {
+    if (isLiked) {
       setIsDisliked(!isDisliked);
+      handleLike();
+    } else {
+      setIsDisliked(!isDisliked);
+    }
   };
 
   // Toggle subscribe
@@ -91,7 +133,7 @@ const Player = ({ params }) => {
         ...response.data,
         owner: { 
           username: "You", 
-          avatar: user?.avatar || "/default-avatar.png" 
+          avatar: session?.user?.avatar || "/default-avatar.png" 
         }
       };
 
@@ -212,12 +254,13 @@ const Player = ({ params }) => {
   }
 
   return (
-    <div className="bg-[#0f0f0f] text-white min-h-screen">
-        <Navbar />
-      {/* Video Player Section */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Main Content */}
+    <>
+      <Navbar />
+      <div className="bg-[#0f0f0f] mt-12 text-white min-h-screen">
+        {/* Video Player Section */}
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Main Content */}
           <div className="w-full lg:w-8/12">
             {/* Video Player */}
             <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
@@ -251,10 +294,9 @@ const Player = ({ params }) => {
                 {/* Dislike Button */}
                 <button 
                   onClick={handleDislike}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-full ${isDisliked ? 'bg-[#272727] text-blue-500' : 'hover:bg-[#272727] text-gray-300'}`}
+                  className={`flex items-center gap-1 px-4 py-2 rounded-full ${isDisliked ? 'bg-[#272727] text-blue-500' : 'hover:bg-[#272727] text-gray-300'}`}
                 >
                   <FiThumbsDown className="text-lg" />
-                  <span>{formatViewCount(dislikeCount)}</span>
                 </button>
                 
                 {/* Share Button */}
@@ -279,9 +321,11 @@ const Player = ({ params }) => {
             {/* Channel Info */}
             <div className="flex items-center justify-between py-4 border-b border-[#303030]">
               <div className="flex items-center gap-3">
-                <img 
-                  src={video.owner?.avatar || "https://res.cloudinary.com/cohltstore/image/upload/v1715100000/default-avatar.jpg"} 
-                  alt={video.owner?.username} 
+                <Image 
+                  src={video.owner?.avatar || "/default-avatar.png"} 
+                  alt={video.owner?.username}
+                  height={48}
+                  width={48}
                   className="w-12 h-12 rounded-full"
                 />
                 <div>
@@ -330,10 +374,12 @@ const Player = ({ params }) => {
 
               {/* Add Comment */}
               <div className="flex gap-3 mb-6">
-                <img 
-                  src={user?.avatar || "/default-avatar.png"} 
-                  alt="Your avatar" 
-                  className="w-10 h-10 rounded-full"
+                <Image
+                  src={session?.user?.avatar || "/default-avatar.png"}
+                  alt="Your avatar"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
                 />
                 <form onSubmit={handleAddComment} className="flex-1">
                   <div className="relative">
@@ -359,10 +405,12 @@ const Player = ({ params }) => {
               <div className="space-y-6">
                 {comments.map(comment => (
                   <div key={comment._id} className="flex gap-3">
-                    <img 
-                      src={comment.owner?.avatar || "/default-avatar.png"} 
-                      alt={comment.owner?.username} 
-                      className="w-10 h-10 rounded-full"
+                    <Image
+                      src={comment.owner?.avatar || "/default-avatar.png"}
+                      alt={comment.owner?.username}
+                      width={40}
+                      height={40}
+                      className="rounded-full h-10 w-10"
                     />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
@@ -477,9 +525,11 @@ const Player = ({ params }) => {
               {[...Array(5)].map((_, i) => (
                 <div key={i} className="flex gap-3 cursor-pointer hover:bg-[#181818] p-2 rounded-lg transition-colors">
                   <div className="w-40 h-24 bg-[#181818] rounded-lg overflow-hidden">
-                    <img 
-                      src="https://res.cloudinary.com/cohltstore/image/upload/v1715100000/placeholder-thumbnail.jpg" 
-                      alt="Thumbnail" 
+                    <Image
+                      src="http://res.cloudinary.com/rohitstore/image/upload/v1754325236/g9ih8sd1hlzqhku3fpv5.png"
+                      alt="Thumbnail"
+                      width={160}
+                      height={96}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -495,6 +545,7 @@ const Player = ({ params }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

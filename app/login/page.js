@@ -1,15 +1,10 @@
 "use client";
-
+import { signIn } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { apiRequest, API_ENDPOINTS } from "../lib/api";
-import { useUser } from "@/context/userContext";
 
-
-const LoginPage = () => {
-  const router = useRouter();
-  const { setUser,setIsloggedin } = useUser();
+export default function LoginPage() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -18,6 +13,8 @@ const LoginPage = () => {
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -38,7 +35,7 @@ const LoginPage = () => {
     const newErrors = {};
 
     if (!formData.username && !formData.email) {
-      newErrors.usernameOrEmail = "Username or email is required";
+      newErrors.submit = "Username or email is required";
     }
 
     if (!formData.password) {
@@ -49,44 +46,34 @@ const LoginPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setIsLoading(true);
 
     try {
-      const data = await apiRequest(API_ENDPOINTS.LOGIN, {
-        method: "POST",
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-        }),
-        credentials: "include",
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: formData.email,
+        username: formData.username,
+        password: formData.password,
+        callbackUrl: "/",
       });
-
-      setUser(data.data.user);
-      setIsloggedin(true);
-      if (data.data.user) {
-        localStorage.setItem("user", JSON.stringify(data.data.user));
+      console.log("result",result)
+      if (result.error) {
+        setErrors({submit: result.error});
+        console.error("Login failed:", result.error);
+      } else {
+        console.log("Login success:", result);
+        router.push(result.url || "/");
       }
-
-      // Redirect to home page after successful login
-      alert("Login successful! Welcome back.");
-      router.push("/");
     } catch (error) {
-      console.error("Login error:", error);
-      setErrors({
-        submit: error.message || "Login failed. Please check your credentials.",
-      });
-    } finally {
-      setIsLoading(false);
+      console.error("SignIn exception:", error);
+      setErrors({submit:error});
     }
-  };
+    setIsLoading(false);
+  }
 
   return (
     <div className="min-h-screen bg-[#121212] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -136,9 +123,6 @@ const LoginPage = () => {
                 }`}
                 placeholder="Enter your username"
               />
-              {errors.username && (
-                <p className="mt-1 text-sm text-red-500">{errors.username}</p>
-              )}
             </div>
 
             {/* Email */}
@@ -152,7 +136,7 @@ const LoginPage = () => {
               <input
                 id="email"
                 name="email"
-                type="text"
+                type="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 className={`w-full px-3 py-3 bg-[#181818] border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent ${
@@ -160,9 +144,6 @@ const LoginPage = () => {
                 }`}
                 placeholder="Enter your email"
               />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-              )}
             </div>
 
             {/* Password */}
@@ -242,6 +223,4 @@ const LoginPage = () => {
       </div>
     </div>
   );
-};
-
-export default LoginPage;
+}
