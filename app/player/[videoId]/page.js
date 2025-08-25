@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { FiThumbsUp, FiThumbsDown, FiShare2, FiSave, FiMoreHorizontal, 
-  FiMessageSquare, FiSend, FiEdit2, FiTrash2, FiChevronDown, FiChevronUp } from 'react-icons/fi';
-import { apiRequest } from '@/app/lib/api';
+import { FiThumbsUp, FiThumbsDown,FiMoreHorizontal, FiShare2, FiSave, FiSend, FiEdit2, FiTrash2, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { apiRequest, toggleVideoLike } from '@/app/lib/api';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
 
 const Player = ({ params }) => {
   const { videoId } = React.use(params);
@@ -78,14 +78,16 @@ const Player = ({ params }) => {
 
   // Toggle like video
   const handleLike = async () => {
+    if (!session) {
+      router.push('/login');
+      return;
+    }
     if (isDisliked) {
       setIsDisliked(false);
     }
       try {
-        const response = await apiRequest(`/api/v1/likes/toggle/v/${videoId}`, {
-          method: "POST",
-          credentials: "include"
-        });
+        const response = await toggleVideoLike("/api/v1/likes/toggle/v",videoId, session?.accessToken);
+        console.log("Like toggle response:", response);
         if (response.data === "liked") {
           setIsLiked(true);
           setLikeCount(likeCount + 1);
@@ -94,9 +96,6 @@ const Player = ({ params }) => {
           setLikeCount(likeCount - 1);
         }
       } catch (error) {
-        if (error.message === "Unauthorized reqest"){
-          router.push('/login');
-        }
         console.error("Error liking video:", error);
       }
   };

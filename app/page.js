@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import { apiRequest, API_ENDPOINTS } from "./lib/api";
 import Image from "next/image";
@@ -123,7 +123,6 @@ export default function YouTubeHome() {
       try {
         const result = await apiRequest(API_ENDPOINTS.GETVIDEOS, {
           method: "GET",
-          credentials: "include",
         });
         setVideos(result.data.videos);
         setIsLoading(false);
@@ -134,7 +133,6 @@ export default function YouTubeHome() {
     };
     fetchVideos();
   }, []);
-
 
   const categories = [
     "All",

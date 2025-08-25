@@ -231,10 +231,7 @@ const Navbar = () => {
 
   async function handleLogout() {
     try {
-      const response = await apiRequest(API_ENDPOINTS.LOGOUT,{
-        method: "POST",
-        credentials: "include"
-      });
+      const response = await signOut({ redirect: true, callbackUrl: "/" });
 
       if (!response.ok) {
         throw new Error("Failed to log out");

@@ -1,5 +1,6 @@
 // API Configuration and Utility Functions
 
+
 // Backend API base URL - update this to match your backend
 export const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URI;
 
@@ -71,3 +72,37 @@ export const uploadFiles = async (endpoint, formData) => {
 };
 
 // custom api endpoints
+
+// Generic client-side version (works in plain React)
+export const toggleVideoLike = async (url, videoId, accessToken, refreshToken) => {
+  try {
+    const fullUrl = `${BACKEND_URL}${url}/${videoId}`;
+
+    const res = await fetch(fullUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': accessToken ? `Bearer ${accessToken}` : ''
+      }
+    });
+
+    if (res.status === 401) {
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+        return; // stop further execution
+      }
+    }
+
+    // Read body safely once
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error((data && data.message) || `HTTP error! status: ${res.status}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error toggling video like:', error);
+    throw error;
+  }
+};
+

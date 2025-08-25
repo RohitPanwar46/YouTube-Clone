@@ -3,6 +3,7 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { API_ENDPOINTS, apiRequest } from "../lib/api";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -54,19 +55,19 @@ export default function LoginPage() {
 
     try {
       const result = await signIn("credentials", {
-        redirect: false,
+        redirect: true,
         email: formData.email,
         username: formData.username,
         password: formData.password,
         callbackUrl: "/",
       });
+
       console.log("result",result)
       if (result.error) {
         setErrors({submit: result.error});
         console.error("Login failed:", result.error);
       } else {
         console.log("Login success:", result);
-        router.push(result.url || "/");
       }
     } catch (error) {
       console.error("SignIn exception:", error);
