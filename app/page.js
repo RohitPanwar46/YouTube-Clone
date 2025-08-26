@@ -176,6 +176,17 @@ export default function YouTubeHome() {
     const s = Math.floor(seconds % 60);
     return `${m}:${s.toString().padStart(2, "0")}`;
   }
+  
+  // formating views
+  const formatViewCount = (count) => {
+    if (count >= 1000000) {
+      return (count / 1000000).toFixed(1) + "M";
+    }
+    if (count >= 1000) {
+      return (count / 1000).toFixed(1) + "K";
+    }
+    return count;
+  };
 
   const handleCategoryChange = (category) => {
     setActiveCategory(category);
@@ -373,7 +384,7 @@ export default function YouTubeHome() {
                         {video.owner.username}
                       </p>
                       <div className="flex items-center text-[#aaa] text-sm">
-                        <span>{video.views} views</span>
+                        <span>{formatViewCount(video.views)} views</span>
                         <span className="mx-2">•</span>
                         <span>{timeAgo(video.createdAt)}</span>
                       </div>

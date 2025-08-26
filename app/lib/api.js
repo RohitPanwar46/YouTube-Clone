@@ -106,3 +106,15 @@ export const toggleVideoLike = async (url, videoId, accessToken, refreshToken) =
   }
 };
 
+export const addView = async (videoId) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/v1/videos/${videoId}`, {
+      method: "POST",
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error adding view:", error);
+    throw error;
+  }
+};
