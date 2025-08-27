@@ -118,3 +118,41 @@ export const addView = async (videoId) => {
     throw error;
   }
 };
+
+export const toggleSubscribe = async (channelId, accessToken) => {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/v1/subscriptions/c/${channelId}`,{
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': accessToken ? `Bearer ${accessToken}` : ''
+      }
+    });
+
+    if (res.status === 401) {
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+        return; // stop further execution
+      }
+    }
+    const data = await res.json()
+    return data.data;
+  } catch (error) {
+    console.error("Error toggling subscription:", error);
+    throw error;
+  }
+}
+
+export const getChannelSubscribers = async (channelId,userId) => {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/v1/subscriptions/c/${channelId}?userId=${userId}`,{
+      method: "GET",
+    });
+    
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    console.error("Error fethcing channel subscribers:", error);
+    throw error;
+  }
+}

@@ -9,10 +9,15 @@ import {
   FiSend,
   FiEdit2,
   FiTrash2,
-  FiChevronDown,
-  FiChevronUp,
+  FiChevronDown
 } from "react-icons/fi";
-import { apiRequest, toggleVideoLike, addView } from "@/app/lib/api";
+import {
+  apiRequest,
+  toggleVideoLike,
+  addView,
+  toggleSubscribe,
+  getChannelSubscribers
+  } from "@/app/lib/api";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -30,12 +35,13 @@ const Player = ({ params }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [subscribersCount, setSubscribersCount] = useState(0)
   const [likeCount, setLikeCount] = useState(0);
   const [showAllDescription, setShowAllDescription] = useState(false);
   const videoRef = useRef(null);
   const router = useRouter();
   const { data: session } = useSession();
-   const [descriptionHeight, setDescriptionHeight] = useState(0);
+  const [descriptionHeight, setDescriptionHeight] = useState(0);
   const descriptionRef = useRef(null);
   
   // Measure description height when component mounts or video changes
@@ -76,6 +82,42 @@ const Player = ({ params }) => {
 
     fetchVideo();
   }, [videoId]);
+
+  //fetch channel subscribers
+  useEffect(() => {
+    const fetchSubscribers = async () => {
+  try {
+    const userId = session?.user?.id ?? null;
+    const response = await getChannelSubscribers(video.owner._id, userId);
+    console.log("response of get subscribers: ", response);
+
+    // normalize array from response
+    const arr = Array.isArray(response)
+      ? response
+      : Array.isArray(response?.subscribers)
+      ? response.subscribers
+      : [];
+
+    // update count (use response.count if provided, else fallback to array length)
+    setSubscribersCount(typeof response?.count === "number" ? response.count : arr.length);
+
+    if (!userId || arr.length === 0) {
+      setIsSubscribed(false);
+      return;
+    }
+
+    const found = arr.some(item => String(item?.subscriber) === String(userId));
+    setIsSubscribed(found);
+  } catch (error) {
+    console.error("Error fetching channel subscribers:", error);
+  }
+};
+
+
+    if (video) {
+      fetchSubscribers();
+    }
+  }, [video,session]);
 
   // Fetch likes count
   useEffect(() => {
@@ -137,7 +179,7 @@ const Player = ({ params }) => {
       if (response.data === "liked") {
         setIsLiked(true);
         setLikeCount(likeCount + 1);
-      } else {
+      } else if (response.data === "unliked") {
         setIsLiked(false);
         setLikeCount(likeCount - 1);
       }
@@ -157,9 +199,23 @@ const Player = ({ params }) => {
   };
 
   // Toggle subscribe
-  const handleSubscribe = () => {
-    setIsSubscribed(!isSubscribed);
-    // In a real app, you would make an API call here
+  const handleSubscribe = async () => {
+    if(!session){
+      router.push("/login")
+    }
+    try {
+      const response = await toggleSubscribe(video.owner._id, session.accessToken);
+      console.log("response of toggle subscribe: ", response)
+      if (response.IsSubscribed) {
+        setIsSubscribed(true);
+      }else{
+        setIsSubscribed(false);
+      }
+
+    } catch (error) {
+      console.error("error in toggle subscribe: ",error)
+    }
+    
   };
 
   // Add new comment
@@ -308,6 +364,17 @@ const Player = ({ params }) => {
     return count;
   };
 
+  // Formate subscribers count
+  const formatSubscribersCount = (count) => {
+    if (count >= 1000000) {
+      return (count / 1000000).toFixed(1) + "M";
+    }
+    if (count >= 1000) {
+      return (count / 1000).toFixed(1) + "K";
+    }
+    return count;
+  }
+
   if (!video) {
     return (
       <div className="flex items-center justify-center h-screen bg-[#0f0f0f]">
@@ -402,7 +469,7 @@ const Player = ({ params }) => {
                   />
                   <div>
                     <h3 className="font-semibold">{video.owner?.username}</h3>
-                    <p className="text-gray-400 text-sm">100K subscribers</p>
+                    <p className="text-gray-400 text-sm">{formatSubscribersCount(subscribersCount)} subcribers </p>
                   </div>
                 </div>
 
@@ -421,7 +488,7 @@ const Player = ({ params }) => {
               {/* Video Description */}
               <div
                 ref={descriptionRef}
-                className="bg-[#181818] rounded-lg p-4 overflow-hidden transition-all duration-500 ease-in-out"
+                className="bg-[#181818] mt-1 rounded-lg p-4 overflow-hidden transition-all duration-500 ease-in-out"
                 style={{
                   maxHeight: showAllDescription
                     ? `${descriptionHeight}px`

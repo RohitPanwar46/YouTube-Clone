@@ -18,7 +18,6 @@ const Navbar = () => {
   const hamburgerRef = useRef(null);
   const { data: session } = useSession();
 
-  console.log("Session:", session);
 
   const sidebarItems = [
     { icon: "home", text: "Home", url: "/" },
@@ -237,12 +236,9 @@ const Navbar = () => {
         throw new Error("Failed to log out");
       }
 
-      // Successfully logged out
-      console.log(response.message);
     } catch (error) {
       console.error("Error logging out:", error);
     }
-    signOut({ callbackUrl: "/" });
   }
 
   return (
