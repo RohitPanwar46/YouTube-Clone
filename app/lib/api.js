@@ -149,10 +149,79 @@ export const getChannelSubscribers = async (channelId,userId) => {
       method: "GET",
     });
     
+    if (!res.ok) {
+      console.error("Failed to fetch channel subscribers");
+    }
     const data = await res.json();
     return data.data;
   } catch (error) {
-    console.error("Error fethcing channel subscribers:", error);
+    console.error("Error fetching channel subscribers:", error);
     throw error;
   }
 }
+
+export const createPlaylist = async (name, accessToken) => {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/v1/playlists`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ name })
+    });
+
+    if (!res.ok) {
+      console.error("Failed to create playlist");
+    }
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    console.error("Error creating playlist:", error);
+    throw error;
+  }
+};
+
+export const getUserPlaylists = async (accessToken) => {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/v1/playlists/user/playlist`, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+    console.log("Response from getUserPlaylists:", res);
+    if (!res.ok) {
+      console.error("Failed to fetch user playlist");
+    }
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    console.error("Error fetching user playlist:", error);
+    throw error;
+  }
+};
+
+export const addVideoInPlaylist = async (playlistId, videoId, accessToken) => {
+  console.log("videoId: ", videoId);
+  console.log("playlistId: ", playlistId);
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/v1/playlists/add/${videoId}/${playlistId}`, {
+      method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${accessToken}`
+      }
+    });
+
+    if (!res.ok) {
+      console.error("Failed to add video in playlist");
+    }
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    console.error("Error adding video in playlist:", error);
+    throw error;
+  }
+};

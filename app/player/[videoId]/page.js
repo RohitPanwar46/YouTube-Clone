@@ -19,9 +19,11 @@ import {
   getChannelSubscribers
   } from "@/app/lib/api";
 import Navbar from "@/components/Navbar";
+import ShareMenu from "@/components/shareMenu";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import SaveMenu from "@/components/saveMenu";
 
 const Player = ({ params }) => {
   const { videoId } = React.use(params);
@@ -43,7 +45,13 @@ const Player = ({ params }) => {
   const { data: session } = useSession();
   const [descriptionHeight, setDescriptionHeight] = useState(0);
   const descriptionRef = useRef(null);
-  
+  const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
+  const [isSaveMenuOpen, setIsSaveMenuOpen] = useState(false);
+  const shareMenuRef = useRef(null);
+  const shareBtnRef = useRef(null);
+  const saveMenuRef = useRef(null);
+  const saveBtnRef = useRef(null);
+
   // Measure description height when component mounts or video changes
   useEffect(() => {
     if (descriptionRef.current) {
@@ -160,6 +168,30 @@ const Player = ({ params }) => {
     fetchComments();
   }, [videoId, currentPage]);
 
+  // Close share menu when clicking outside
+  useEffect(() => {
+  function handleClickOutside(event) {
+      if ((shareMenuRef.current && !shareMenuRef.current.contains(event.target)) && (shareBtnRef.current && !shareBtnRef.current.contains(event.target))) {
+      setIsShareMenuOpen(false);
+      }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Close save menu on clicking outside
+  useEffect(() => {
+  function handleClickOutside(event) {
+      if ((saveMenuRef.current && !saveMenuRef.current.contains(event.target)) && (saveBtnRef.current && !saveBtnRef.current.contains(event.target))) {
+      setIsSaveMenuOpen(false);
+      }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   // Toggle like video
   const handleLike = async () => {
     if (!session) {
@@ -208,8 +240,10 @@ const Player = ({ params }) => {
       console.log("response of toggle subscribe: ", response)
       if (response.IsSubscribed) {
         setIsSubscribed(true);
+        setSubscribersCount(subscribersCount + 1);
       }else{
         setIsSubscribed(false);
+        setSubscribersCount(subscribersCount - 1);
       }
 
     } catch (error) {
@@ -386,6 +420,8 @@ const Player = ({ params }) => {
   return (
     <>
       <Navbar />
+      {isShareMenuOpen && <div ref={shareMenuRef}><ShareMenu className="absolute top-30 z-10" /></div>}
+      {isSaveMenuOpen && <div ref={saveMenuRef}><SaveMenu videoId={video._id} /></div>}
       <div className="bg-[#0f0f0f] mt-12 text-white min-h-screen">
         {/* Video Player Section */}
         <div className="max-w-7xl mx-auto px-4 py-6">
@@ -439,21 +475,17 @@ const Player = ({ params }) => {
                   </button>
 
                   {/* Share Button */}
-                  <button className="flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-[#272727] text-gray-300">
+                  <div ref={shareBtnRef} onClick={() => setIsShareMenuOpen(!isShareMenuOpen)} className="flex cursor-pointer items-center gap-1 px-3 py-1.5 rounded-full hover:bg-[#272727] text-gray-300">
                     <FiShare2 className="text-lg" />
                     <span>Share</span>
-                  </button>
-
+                  </div>
+                  
                   {/* Save Button */}
-                  <button className="flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-[#272727] text-gray-300">
+                  <button ref={saveBtnRef} onClick={() => setIsSaveMenuOpen(!isSaveMenuOpen)} className="flex mr-1.5 items-center gap-1 px-3 py-1.5 rounded-full hover:bg-[#272727] text-gray-300">
                     <FiSave className="text-lg" />
                     <span>Save</span>
                   </button>
 
-                  {/* More Button */}
-                  <button className="p-2 rounded-full hover:bg-[#272727] text-gray-300">
-                    <FiMoreHorizontal className="text-lg" />
-                  </button>
                 </div>
               </div>
 
