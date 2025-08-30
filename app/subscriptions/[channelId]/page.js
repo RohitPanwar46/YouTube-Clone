@@ -1,6 +1,8 @@
 import React from 'react'
 
-const Channel = ({channelId}) => {
+const Channel = ({params}) => {
+  const {channelId} = React.use(params);
+
   return (
     <div>
       <h1>Subscriptions</h1>
