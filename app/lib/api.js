@@ -191,7 +191,6 @@ export const getUserPlaylists = async (accessToken) => {
         'Authorization': `Bearer ${accessToken}`
       }
     });
-    console.log("Response from getUserPlaylists:", res);
     if (!res.ok) {
       console.error("Failed to fetch user playlist");
     }
@@ -204,8 +203,6 @@ export const getUserPlaylists = async (accessToken) => {
 };
 
 export const addVideoInPlaylist = async (playlistId, videoId, accessToken) => {
-  console.log("videoId: ", videoId);
-  console.log("playlistId: ", playlistId);
   try {
     const res = await fetch(`${BACKEND_URL}/api/v1/playlists/add/${videoId}/${playlistId}`, {
       method: "PATCH",
@@ -219,7 +216,6 @@ export const addVideoInPlaylist = async (playlistId, videoId, accessToken) => {
       console.error("Failed to add video in playlist");
     }
     const data = await res.json();
-    console.log("data at api: ", data)
     return data.data;
   } catch (error) {
     console.error("Error adding video in playlist:", error);

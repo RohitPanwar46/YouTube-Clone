@@ -62,12 +62,9 @@ export default function LoginPage() {
         callbackUrl: "/",
       });
 
-      console.log("result",result)
       if (result.error) {
         setErrors({submit: result.error});
         console.error("Login failed:", result.error);
-      } else {
-        console.log("Login success:", result);
       }
     } catch (error) {
       console.error("SignIn exception:", error);

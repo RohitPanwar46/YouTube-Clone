@@ -42,6 +42,7 @@ const Player = ({ params }) => {
   const [subscribersCount, setSubscribersCount] = useState(0)
   const [likeCount, setLikeCount] = useState(0);
   const [showAllDescription, setShowAllDescription] = useState(false);
+  const [suggestedVideos, setSuggestedVideos] = useState([])
   const videoRef = useRef(null);
   const router = useRouter();
   const { data: session } = useSession();
@@ -76,6 +77,19 @@ const Player = ({ params }) => {
     }
   },[video,videoId]);
 
+  // fetch suggestion video
+  useEffect(()=>{
+    const getallVideos = async ()=> {
+      const response = await apiRequest("/api/v1/videos",{
+        method: "GET"
+      })
+      const videos = response.data.videos;
+      setSuggestedVideos(videos)
+      
+    }
+    getallVideos()
+  },[])
+
   // Fetch video details
   useEffect(() => {
     const fetchVideo = async () => {
@@ -84,7 +98,6 @@ const Player = ({ params }) => {
           method: "GET",
         });
         setVideo(response.data);
-        console.log("Video fetched:", response.data);
       } catch (error) {
         console.error("Error fetching video:", error);
       }
@@ -99,7 +112,6 @@ const Player = ({ params }) => {
   try {
     const userId = session?.user?.id ?? null;
     const response = await getChannelSubscribers(video.owner._id, userId);
-    console.log("response of get subscribers: ", response);
 
     // normalize array from response
     const arr = Array.isArray(response)
@@ -138,7 +150,6 @@ const Player = ({ params }) => {
           `/api/v1/likes/count/${videoId}?userId=${userId}`,
           { method: "GET" }
         );
-        console.log("Likes count response:", response);
         setIsLiked(response.data.likedByUser);
         setLikeCount(response.data.likesCount);
       } catch (error) {
@@ -161,14 +172,13 @@ const Player = ({ params }) => {
         );
         setComments(response.data.comments || []);
         setTotalComments(response.data.total || 0);
-        console.log("Comments fetched:", response.data.comments);
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
     };
 
     fetchComments();
-  }, [videoId, currentPage, comments]);
+  }, [videoId, currentPage]);
 
   // Close share menu when clicking outside
   useEffect(() => {
@@ -204,12 +214,12 @@ const Player = ({ params }) => {
       setIsDisliked(false);
     }
     try {
+      setIsLiked(!isLiked);
       const response = await toggleVideoLike(
         "/api/v1/likes/toggle/v",
         videoId,
         session?.accessToken
       );
-      console.log("Like toggle response:", response);
       if (response.data === "liked") {
         setIsLiked(true);
         setLikeCount(likeCount + 1);
@@ -239,7 +249,6 @@ const Player = ({ params }) => {
     }
     try {
       const response = await toggleSubscribe(video.owner._id, session.accessToken);
-      console.log("response of toggle subscribe: ", response)
       if (response.IsSubscribed) {
         setIsSubscribed(true);
         setSubscribersCount(subscribersCount + 1);
@@ -264,8 +273,9 @@ const Player = ({ params }) => {
     }
     try {
       const response = await addComment(newComment, video._id, session.accessToken);
-      console.log("comment adding response: ", response)
-
+      //update UI
+      setComments((prev) => [response, ...prev]);
+      setTotalComments((prev) => prev + 1);
       setNewComment("");
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -310,54 +320,11 @@ const Player = ({ params }) => {
     try {
       await deleteComment(commentId, session.accessToken);
 
+       // Update UI
+      setComments((prev) => prev.filter((comment) => comment._id !== commentId));
+      setTotalComments(prev => prev - 1);
     } catch (error) {
       console.error("Error deleting comment:", error);
-    }
-  };
-
-  // Toggle like on comment
-  const handleLikeComment = async (commentId) => {
-    try {
-      // Optimistically update UI
-      setComments((prev) =>
-        prev.map((comment) => {
-          if (comment._id === commentId) {
-            const wasLiked = comment.isLiked;
-            return {
-              ...comment,
-              isLiked: !wasLiked,
-              likes: wasLiked ? comment.likes - 1 : comment.likes + 1,
-            };
-          }
-          return comment;
-        })
-      );
-
-      // Make API call
-      if (comments.find((c) => c._id === commentId).isLiked) {
-        await apiRequest(`/api/v1/comments/${commentId}/unlike`, {
-          method: "POST",
-        });
-      } else {
-        await apiRequest(`/api/v1/comments/${commentId}/like`, {
-          method: "POST",
-        });
-      }
-    } catch (error) {
-      console.error("Error toggling comment like:", error);
-      // Revert UI on error
-      setComments((prev) =>
-        prev.map((comment) => {
-          if (comment._id === commentId) {
-            return {
-              ...comment,
-              isLiked: !comment.isLiked,
-              likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
-            };
-          }
-          return comment;
-        })
-      );
     }
   };
 
@@ -377,6 +344,7 @@ const Player = ({ params }) => {
     const now = new Date();
     const secondsAgo = Math.floor((now - date) / 1000);
 
+    if(secondsAgo < 5) return `Just now`
     if (secondsAgo < 60) return `${secondsAgo} seconds ago`;
     if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)} minutes ago`;
     if (secondsAgo < 86400) return `${Math.floor(secondsAgo / 3600)} hours ago`;
@@ -416,7 +384,7 @@ const Player = ({ params }) => {
   }
 
   return (
-    <>
+    <div className="max-h-screen scrollbar-hide overflow-y-scroll">
       <Navbar />
       {isShareMenuOpen && <div ref={shareMenuRef}><ShareMenu className="absolute top-30 z-10" /></div>}
       {isSaveMenuOpen && <div ref={saveMenuRef}><SaveMenu videoId={video._id} /></div>}
@@ -425,7 +393,7 @@ const Player = ({ params }) => {
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Main Content */}
-            <div className="w-full lg:w-8/12">
+            <div className="w-full lg:w-8/12 ">
               {/* Video Player */}
               <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
                 <video
@@ -719,16 +687,17 @@ const Player = ({ params }) => {
             </div>
 
             {/* Suggested Videos Sidebar */}
-            <div className="w-full lg:w-4/12 mt-8 lg:mt-0">
+            <div className="w-full lg:w-4/12 mt-8 lg:mt-0 max-h-screen scrollbar-hide overflow-y-scroll">
               <div className="space-y-4">
-                {[...Array(5)].map((_, i) => (
+                {suggestedVideos.map((video) => (
                   <div
-                    key={i}
+                    onClick={()=>{router.push(`/player/${video._id}`)}}
+                    key={video._id}
                     className="flex gap-3 cursor-pointer hover:bg-[#181818] p-2 rounded-lg transition-colors"
                   >
                     <div className="w-40 h-24 bg-[#181818] rounded-lg overflow-hidden">
                       <Image
-                        src="http://res.cloudinary.com/rohitstore/image/upload/v1754325236/g9ih8sd1hlzqhku3fpv5.png"
+                        src={video.thumbnail}
                         alt="Thumbnail"
                         width={160}
                         height={96}
@@ -737,13 +706,10 @@ const Player = ({ params }) => {
                     </div>
                     <div className="flex-1">
                       <h4 className="font-medium line-clamp-2">
-                        How to Build a YouTube Clone with Next.js
+                        {video.title}
                       </h4>
-                      <p className="text-sm text-gray-400 mt-1">
-                        Web Dev Simplified
-                      </p>
                       <div className="text-xs text-gray-500 mt-1">
-                        250K views • 2 days ago
+                        {formatViewCount(video.views)} • {formatTimeAgo(video.createdAt)}
                       </div>
                     </div>
                   </div>
@@ -753,7 +719,7 @@ const Player = ({ params }) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

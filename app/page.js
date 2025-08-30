@@ -260,16 +260,16 @@ export default function YouTubeHome() {
   };
 
   return (
-    <div className="max-h-screen overflow-y-scroll relative bg-[#121212] text-white">
+    <div className="max-h-screen scrollbar-hide overflow-y-scroll relative bg-[#121212] text-white">
       <Icons />
 
       {/* Navbar Component */}
       <Navbar />
 
       {/* Main Content */}
-      <main className="pt-14 md:pt-16 flex">
+      <main className="pt-14 md:pt-16 flex ">
         {/* Sidebar  */}
-        <aside className="hidden md:block scrollbar-hide fixed top-14 md:top-16 bottom-0 bg-[#0f0f0f] w-18 md:w-64 z-40 overflow-y-auto">
+        <aside className="hidden md:block fixed top-14 md:top-16 bottom-0 bg-[#0f0f0f] w-18 md:w-64 z-40 overflow-y-auto">
             <div className="py-4">
               {sidebarItems.map((item, index) =>
                 item.separator ? (
@@ -307,9 +307,9 @@ export default function YouTubeHome() {
           </aside>
 
         {/* Content Area */}
-        <div className="flex-1 p-4 md:p-6 md:ml-64">
+        <div className="flex-1 p-4 md:p-6 md:ml-64 ">
           {/* Category Navigation */}
-          <div className="hidden md:flex overflow-x-auto pb-4 mb-6 scrollbar-hide">
+          <div className="hidden md:flex overflow-x-auto pb-4 mb-6">
             {categories.map((category) => (
               <button
                 key={category}
@@ -331,7 +331,7 @@ export default function YouTubeHome() {
               <div className="w-12 h-12 border-4 border-[#303030] border-t-red-500 rounded-full animate-spin"></div>
             </div>
           ) : (
-            <div className="grid scrollbar-hide w-full grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
               {videos.map((video) => (
                 <div
                   key={video._id}
