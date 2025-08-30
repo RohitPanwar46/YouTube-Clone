@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   FiThumbsUp,
   FiThumbsDown,
-  FiMoreHorizontal,
   FiShare2,
   FiSave,
   FiSend,
@@ -16,7 +15,10 @@ import {
   toggleVideoLike,
   addView,
   toggleSubscribe,
-  getChannelSubscribers
+  getChannelSubscribers,
+  addComment,
+  updateComment,
+  deleteComment
   } from "@/app/lib/api";
 import Navbar from "@/components/Navbar";
 import ShareMenu from "@/components/shareMenu";
@@ -72,7 +74,7 @@ const Player = ({ params }) => {
     if (video) {
       increaseViewCount();
     }
-  });
+  },[video,videoId]);
 
   // Fetch video details
   useEffect(() => {
@@ -159,14 +161,14 @@ const Player = ({ params }) => {
         );
         setComments(response.data.comments || []);
         setTotalComments(response.data.total || 0);
-        console.log("Comments fetched:", response.data);
+        console.log("Comments fetched:", response.data.comments);
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
     };
 
     fetchComments();
-  }, [videoId, currentPage]);
+  }, [videoId, currentPage, comments]);
 
   // Close share menu when clicking outside
   useEffect(() => {
@@ -256,24 +258,14 @@ const Player = ({ params }) => {
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
-
+    if (!session){
+      router.push("/login")
+      return;
+    }
     try {
-      const response = await apiRequest(`/api/v1/comments/${videoId}`, {
-        method: "POST",
-        body: JSON.stringify({ content: newComment }),
-      });
+      const response = await addComment(newComment, video._id, session.accessToken);
+      console.log("comment adding response: ", response)
 
-      // Optimistically update UI
-      const newCommentObj = {
-        ...response.data,
-        owner: {
-          username: "You",
-          avatar: session?.user?.avatar || "/default-avatar.png",
-        },
-      };
-
-      setComments((prev) => [newCommentObj, ...prev]);
-      setTotalComments((prev) => prev + 1);
       setNewComment("");
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -281,7 +273,7 @@ const Player = ({ params }) => {
   };
 
   // Start editing a comment
-  const startEditComment = (comment) => {
+  const startEditComment = async (comment) => {
     setEditingComment(comment._id);
     setEditCommentText(comment.content);
   };
@@ -297,10 +289,7 @@ const Player = ({ params }) => {
     if (!editCommentText.trim()) return;
 
     try {
-      await apiRequest(`/api/v1/comments/${commentId}`, {
-        method: "PUT",
-        body: JSON.stringify({ content: editCommentText }),
-      });
+      await updateComment(commentId, editCommentText, session.accessToken);
 
       // Update UI
       setComments((prev) =>
@@ -319,13 +308,8 @@ const Player = ({ params }) => {
   // Delete comment
   const handleDeleteComment = async (commentId) => {
     try {
-      await apiRequest(`/api/v1/comments/${commentId}`, { method: "DELETE" });
+      await deleteComment(commentId, session.accessToken);
 
-      // Update UI
-      setComments((prev) =>
-        prev.filter((comment) => comment._id !== commentId)
-      );
-      setTotalComments((prev) => prev - 1);
     } catch (error) {
       console.error("Error deleting comment:", error);
     }
@@ -387,6 +371,20 @@ const Player = ({ params }) => {
     });
   };
 
+  // Format time ago
+  const formatTimeAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const secondsAgo = Math.floor((now - date) / 1000);
+
+    if (secondsAgo < 60) return `${secondsAgo} seconds ago`;
+    if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)} minutes ago`;
+    if (secondsAgo < 86400) return `${Math.floor(secondsAgo / 3600)} hours ago`;
+    if (secondsAgo < 2592000) return `${Math.floor(secondsAgo / 86400)} days ago`;
+    if (secondsAgo < 31536000) return `${Math.floor(secondsAgo / 2592000)} months ago`;
+    return `${Math.floor(secondsAgo / 31536000)} years ago`;
+  };
+
   // Format view count
   const formatViewCount = (count) => {
     if (count >= 1000000) {
@@ -407,7 +405,7 @@ const Player = ({ params }) => {
       return (count / 1000).toFixed(1) + "K";
     }
     return count;
-  }
+  };
 
   if (!video) {
     return (
@@ -445,7 +443,7 @@ const Player = ({ params }) => {
               <div className="flex flex-wrap items-center justify-between mt-3 pb-4 border-b border-[#303030]">
                 <div className="text-gray-400 text-sm">
                   {formatViewCount(video.views || 0)} views •{" "}
-                  {formatDate(video.createdAt)}
+                  {formatTimeAgo(video.createdAt)}
                 </div>
 
                 <div className="flex items-center gap-3 mt-2 sm:mt-0">
@@ -550,13 +548,7 @@ const Player = ({ params }) => {
                   <h2 className="text-xl font-semibold">
                     {totalComments} Comments
                   </h2>
-                  <div className="flex items-center text-sm text-gray-400">
-                    <span>Sort by</span>
-                    <button className="ml-2 flex items-center font-medium text-white">
-                      Top comments <FiChevronDown className="ml-1" />
-                    </button>
-                  </div>
-                </div>
+              </div>
 
                 {/* Add Comment */}
                 <div className="flex gap-3 mb-6">
@@ -579,7 +571,7 @@ const Player = ({ params }) => {
                       <button
                         type="submit"
                         disabled={!newComment.trim()}
-                        className={`absolute right-2 bottom-2 ${
+                        className={`absolute right-2 bottom-2 cursor-pointer ${
                           newComment.trim() ? "text-white" : "text-gray-600"
                         }`}
                       >
@@ -606,7 +598,7 @@ const Player = ({ params }) => {
                             {comment.owner?.username}
                           </h4>
                           <span className="text-xs text-gray-400">
-                            {formatDate(comment.createdAt)}
+                            {formatTimeAgo(comment.createdAt)}
                           </span>
                         </div>
 
@@ -636,28 +628,12 @@ const Player = ({ params }) => {
                             </div>
                           </div>
                         ) : (
-                          <>
+                          <div className="flex items-center justify-between">
                             <p className="mt-1">{comment.content}</p>
-                            <div className="flex items-center gap-4 mt-2">
-                              <button
-                                onClick={() => handleLikeComment(comment._id)}
-                                className={`flex items-center gap-1 text-sm ${
-                                  comment.isLiked
-                                    ? "text-red-500"
-                                    : "text-gray-400 hover:text-white"
-                                }`}
-                              >
-                                <FiThumbsUp />
-                                <span>
-                                  {formatViewCount(comment.likes || 0)}
-                                </span>
-                              </button>
-                              <button className="text-gray-400 hover:text-white text-sm">
-                                Reply
-                              </button>
+                            <div className="flex items-center gap-4">
 
                               {/* Comment owner actions */}
-                              {comment.owner?.username === "You" && (
+                              {comment.owner?._id === session.user?.id && (
                                 <div className="flex gap-3 ml-auto">
                                   <button
                                     onClick={() => startEditComment(comment)}
@@ -676,7 +652,7 @@ const Player = ({ params }) => {
                                 </div>
                               )}
                             </div>
-                          </>
+                          </div>
                         )}
                       </div>
                     </div>

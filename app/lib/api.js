@@ -219,9 +219,75 @@ export const addVideoInPlaylist = async (playlistId, videoId, accessToken) => {
       console.error("Failed to add video in playlist");
     }
     const data = await res.json();
+    console.log("data at api: ", data)
     return data.data;
   } catch (error) {
     console.error("Error adding video in playlist:", error);
     throw error;
   }
 };
+
+export const addComment = async (comment, videoId, accessToken) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/v1/comments/${videoId}`,{
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({content :comment})
+    });
+
+    if (!response.ok) {
+      console.error("error in adding comment here is response: ",response) ;
+    }
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error("error in adding comment: ", error);
+    throw error;
+  }
+}
+
+export const updateComment = async (commentId, content, accessToken) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/v1/comments/c/${commentId}`, {
+      method: "PATCH",
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ content })
+    });
+
+    if (!response.ok) {
+      console.error("error in updating comment here is response: ", response);
+    }
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error("error in updating comment: ", error);
+    throw error;
+  }
+}
+
+export const deleteComment = async (commentId, accessToken) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/v1/comments/c/${commentId}`, {
+      method: "DELETE",
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${accessToken}`
+      }
+    });
+
+    if (!response.ok) {
+      console.error("error in deleting comment here is response: ", response);
+    }
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error("error in deleting comment: ", error);
+    throw error;
+  }
+}
