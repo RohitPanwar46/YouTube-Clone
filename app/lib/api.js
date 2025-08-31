@@ -160,6 +160,27 @@ export const getChannelSubscribers = async (channelId,userId) => {
   }
 }
 
+export const getUserSubscriptions = async (userId, accessToken) => {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/v1/subscriptions/u/${userId}`, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+
+    if (!res.ok) {
+      console.error("Failed to fetch user subscriptions");
+    }
+    const data = await res.json();
+    return data.data;
+  } catch (error) {
+    console.error("Error fetching user subscriptions:", error);
+    throw error;
+  }
+};
+
 export const createPlaylist = async (name, accessToken) => {
   try {
     const res = await fetch(`${BACKEND_URL}/api/v1/playlists`, {

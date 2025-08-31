@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
-import { apiRequest, API_ENDPOINTS } from "../app/lib/api";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 
