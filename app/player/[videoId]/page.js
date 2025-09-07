@@ -601,7 +601,7 @@ const Player = ({ params }) => {
                             <div className="flex items-center gap-4">
 
                               {/* Comment owner actions */}
-                              {comment.owner?._id === session.user?.id && (
+                              {comment.owner?._id === session?.user?.id && (
                                 <div className="flex gap-3 ml-auto">
                                   <button
                                     onClick={() => startEditComment(comment)}
@@ -709,7 +709,7 @@ const Player = ({ params }) => {
                         {video.title}
                       </h4>
                       <div className="text-xs text-gray-500 mt-1">
-                        {formatViewCount(video.views)} • {formatTimeAgo(video.createdAt)}
+                        {formatViewCount(video.views)} views • {formatTimeAgo(video.createdAt)}
                       </div>
                     </div>
                   </div>
