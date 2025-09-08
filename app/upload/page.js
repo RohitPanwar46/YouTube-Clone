@@ -16,6 +16,7 @@ const Uploader = () => {
     videoFile: null,
     thumbnailFile: null
   });
+  const [disableCancelBtn, setDisableCancelBtn] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadSpeed, setUploadSpeed] = useState(0);
@@ -122,6 +123,9 @@ const Uploader = () => {
         onUploadProgress: (progressEvent) => {
           const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setUploadProgress(percent);
+          if(percent === 100){
+            setDisableCancelBtn(true);
+          }
         },
         onDownloadProgress: (progressEvent) => {
           const speed = Math.round(progressEvent.loaded / (progressEvent.timeStamp / 1000) / 1024);
@@ -363,7 +367,7 @@ const Uploader = () => {
           {/* Submit Buttons */}
           <div className="flex flex-col sm:flex-row justify-end gap-4 pt-4">
             <button
-              disabled={isUploading}
+              disabled={disableCancelBtn}
               type="button"
               onClick={() => router.back()}
               className="px-6 disabled:opacity-50 py-3 bg-[#303030] rounded-lg hover:bg-[#404040] transition-all duration-300 transform hover:-translate-y-0.5"
