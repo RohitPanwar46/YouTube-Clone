@@ -18,6 +18,7 @@ const Uploader = () => {
   });
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadSpeed, setUploadSpeed] = useState(0);
   const [dragActive, setDragActive] = useState(false);
   const [errors, setErrors] = useState({});
   const [isSuccess, setIsSuccess] = useState(false);
@@ -121,6 +122,10 @@ const Uploader = () => {
         onUploadProgress: (progressEvent) => {
           const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setUploadProgress(percent);
+        },
+        onDownloadProgress: (progressEvent) => {
+          const speed = Math.round(progressEvent.loaded / (progressEvent.timeStamp / 1000) / 1024);
+          setUploadSpeed(speed);
         }
       });
       console.log("response of uploading video is: ", response)
@@ -341,7 +346,7 @@ const Uploader = () => {
                   <div className="w-5 h-5 border-2 border-red-500 border-t-transparent rounded-full animate-spin mr-2"></div>
                   Uploading...
                 </span>
-                <span className="text-sm text-gray-400">{uploadProgress}%</span>
+                <span className="text-sm text-gray-400">{uploadProgress}% {uploadSpeed}KB/s</span>
               </div>
               <div className="w-full bg-[#303030] rounded-full h-2.5 overflow-hidden">
                 <div 
@@ -358,9 +363,10 @@ const Uploader = () => {
           {/* Submit Buttons */}
           <div className="flex flex-col sm:flex-row justify-end gap-4 pt-4">
             <button
+              disabled={isUploading}
               type="button"
               onClick={() => router.back()}
-              className="px-6 py-3 bg-[#303030] rounded-lg hover:bg-[#404040] transition-all duration-300 transform hover:-translate-y-0.5"
+              className="px-6 disabled:opacity-50 py-3 bg-[#303030] rounded-lg hover:bg-[#404040] transition-all duration-300 transform hover:-translate-y-0.5"
             >
               Cancel
             </button>
