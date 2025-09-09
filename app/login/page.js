@@ -1,9 +1,9 @@
 "use client";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { API_ENDPOINTS, apiRequest } from "../lib/api";
+import { useSession } from "next-auth/react";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -16,6 +16,13 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if(session){
+      router.back();
+    }
+  }, [router,session]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
