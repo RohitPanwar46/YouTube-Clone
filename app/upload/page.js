@@ -101,9 +101,6 @@ const Uploader = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!session){
-      router.push("/login")
-    }
     if (!validateForm()) return;
     
     setIsUploading(true);

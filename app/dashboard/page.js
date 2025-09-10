@@ -44,7 +44,6 @@ const Dashboard = () => {
   // Fetch data from API
   useEffect(() => {
     if (!session) {
-      router.push("/login");
       return;
     }
     const fetchData = async () => {
