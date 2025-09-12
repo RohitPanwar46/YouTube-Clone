@@ -99,6 +99,7 @@ export default function YouTubeHome() {
 
   // fetching videos
   useEffect(() => {
+    console.log("session", session);
     const fetchVideos = async () => {
       try {
         const result = await apiRequest(API_ENDPOINTS.GETVIDEOS, {
@@ -112,7 +113,7 @@ export default function YouTubeHome() {
       }
     };
     fetchVideos();
-  }, []);
+  }, [session]);
 
   // fetching subscribers if session exists
   useEffect(() => {

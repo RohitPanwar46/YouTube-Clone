@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import { API_ENDPOINTS, apiRequest } from "@/app/lib/api";
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -227,12 +228,19 @@ const Navbar = () => {
     setSearchQuery(event.target.value);
   }
 
-  async function handleLogout() {
+  async function handleLogout(accessToken) {
     try {
-      const response = await signOut({ redirect: true, callbackUrl: "/" });
+      const bRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/v1/users/logout`, {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-      if (!response.ok) {
-        throw new Error("Failed to log out");
+      await signOut({ redirect: true, callbackUrl: "/" });
+
+      if(!bRes.ok) {
+        console.error("Backend logout failed:", bRes.statusText);
       }
 
     } catch (error) {
@@ -424,7 +432,7 @@ const Navbar = () => {
                   <div className="py-2">
                     {session ? (
                       <button
-                        onClick={handleLogout}
+                        onClick={() => handleLogout(session.accessToken)}
                         className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#303030] transition-colors duration-200"
                       >
                         Logout

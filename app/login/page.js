@@ -62,11 +62,10 @@ export default function LoginPage() {
 
     try {
       const result = await signIn("credentials", {
-        redirect: true,
         email: formData.email,
         username: formData.username,
         password: formData.password,
-        callbackUrl: "/",
+        callbackUrl: "/", // Redirect to home on success
       });
 
       if (result.error) {

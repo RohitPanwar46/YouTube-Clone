@@ -94,6 +94,7 @@ export const authOptions = {
       if(token?.accessToken){
         const decoded = jwtDecode(token.accessToken);
         const currentTime = Math.floor(Date.now() / 1000);
+        console.log("Decoded jwt expDate:", decoded.exp, "Current Time:", currentTime);
         if (decoded.exp < currentTime) {
           // Access token expired, try to refresh it
           const newTokens = await refreshAccessToken(token.refreshToken);
