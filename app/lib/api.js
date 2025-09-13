@@ -308,3 +308,25 @@ export const deleteComment = async (commentId, accessToken) => {
     throw error;
   }
 }
+
+export const getAllChannels = async (accessToken) => {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/v1/subscriptions/all/channels`, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+
+    if (!res.ok) {
+      console.error("Failed to fetch channels");
+      throw new Error("Failed to fetch channels");
+    }
+    const data = await res.json();
+    return data.data || data;
+  } catch (error) {
+    console.error("Error fetching channels:", error);
+    throw error;
+  }
+};

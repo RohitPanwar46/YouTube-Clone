@@ -83,7 +83,7 @@ export default function YouTubeHome() {
     { icon: "home", text: "Home", url: "/" },
     { icon: "fire", text: "Upload", url: "/upload" },
     { icon: "dashboard", text: "Dashboards", url: "/dashboard" },
-    { icon: "compass", text: "Channels", url: "/channel" },
+    { icon: "compass", text: "Channels", url: "/channels" },
     { icon: "folder", text: "Subscriptions", url: "/subscriptions" },
     { separator: true },
     { icon: "photo-video", text: "Playlists", url: "/playlists" },
