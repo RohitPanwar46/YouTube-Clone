@@ -26,7 +26,6 @@ export default function ChannelsPage() {
 
     try {
       const result = await toggleSubscribe(channelId, session.accessToken);
-      console.log('Toggle subscription result:', result);
       
       // Extract subscription status from backend response
       let isSubscribed = false;
@@ -58,7 +57,6 @@ export default function ChannelsPage() {
         
         // Fetch all channels (no auth required)
         const channelsData = await getAllChannels();
-        console.log('All channels:', channelsData);
         
         // Filter out the current user's channel
         const filteredChannels = channelsData.filter(channel => {
@@ -67,23 +65,16 @@ export default function ChannelsPage() {
           return channelId !== userId;
         });
         
-        console.log('Filtered channels (excluding current user):', filteredChannels);
         setChannels(filteredChannels);
 
         // Fetch user subscriptions if logged in
         if (session?.accessToken && session?.user?.id) {
-          console.log('Session data:', session);
-          console.log('User ID:', session.user.id);
-          console.log('Access token:', session.accessToken);
-          
           try {
             const subscriptions = await getUserSubscriptions(session.user.id, session.accessToken);
-            console.log('User subscriptions:', subscriptions);
             
             if (subscriptions && Array.isArray(subscriptions)) {
               const subscriptionMap = {};
               subscriptions.forEach(sub => {
-                console.log('Processing subscription:', sub);
                 // Handle different possible channel ID formats
                 let channelId;
                 
@@ -97,23 +88,14 @@ export default function ChannelsPage() {
                 
                 if (channelId) {
                   subscriptionMap[channelId] = true;
-                  console.log(`Mapped channel ${channelId} as subscribed`);
-                } else {
-                  console.log('Could not extract channel ID from:', sub);
                 }
               });
-              console.log('Final subscription map:', subscriptionMap);
               setSubscribed(subscriptionMap);
-            } else {
-              console.log('No subscriptions found or invalid format');
             }
           } catch (subError) {
             console.error('Failed to fetch subscriptions:', subError);
             // Don't set error for subscription fetch failure, just log it
           }
-        } else {
-          console.log('No session or missing access token/user ID');
-          console.log('Session:', session);
         }
       } catch (err) {
         console.error('Failed to fetch channels:', err);
@@ -206,12 +188,6 @@ export default function ChannelsPage() {
                   >
                     {channel.username || channel.name}
                   </h2>
-                  
-                  {/* Debug info - remove this later */}
-                  <div className="text-xs text-gray-400 text-center mb-2">
-                    ID: {channel._id || channel.id} | 
-                    Subscribed: {subscribed[channel._id || channel.id] ? 'Yes' : 'No'}
-                  </div>
 
                   <button
                     onClick={() => toggleSubscription(channel._id || channel.id)}
