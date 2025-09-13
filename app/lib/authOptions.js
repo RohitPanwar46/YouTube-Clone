@@ -1,30 +1,31 @@
+// [...nextauth].js
 import CredentialsProvider from "next-auth/providers/credentials";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode"; // default import // optional - server-side fetch is available in Node/Next
 
 async function refreshAccessToken(refreshToken) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/api/v1/users/refresh-token`, {
       method: "POST",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${refreshToken}`
+        "Authorization": `Bearer ${refreshToken}`,
       },
-      
     });
 
     const data = await res.json();
 
-    if (res.ok) {
-      return {
-        accessToken: data.data.accessToken,
-        refreshToken: data.data.refreshToken,
-      };
+    if (!res.ok) {
+      // backend returned error (invalid/expired refresh)
+      throw new Error(data.message || "Failed to refresh access token");
     }
 
-    throw new Error(data.message || "Failed to refresh access token");
+    return {
+      accessToken: data.data.accessToken,
+      refreshToken: data.data.refreshToken,
+    };
   } catch (error) {
     console.error("Error refreshing access token:", error);
-    throw error;
+    return null; // caller will handle null (refresh failed)
   }
 }
 
@@ -51,8 +52,7 @@ export const authOptions = {
           });
 
           const payload = await res.json();
-
-          if (res.ok && payload) {
+          if (res.ok && payload?.data?.user) {
             return {
               id: payload.data.user._id,
               email: payload.data.user.email,
@@ -63,7 +63,7 @@ export const authOptions = {
               avatar: payload.data.user.avatar,
               coverImage: payload.data.user.coverImage || null,
               watchHistory: payload.data.user.watchHistory || [],
-            }; // IMPORTANT: This will be passed to jwt as `user`
+            };
           }
           return null;
         } catch (err) {
@@ -76,54 +76,94 @@ export const authOptions = {
 
   session: {
     strategy: "jwt",
+    // optional: maxAge: 60 * 60 * 24 * 30, // 30 days
   },
 
   callbacks: {
+    // jwt runs on server and can store refreshToken safely in the token
     async jwt({ token, user }) {
+      // Initial sign in
       if (user) {
         token.id = user.id;
         token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
+        token.refreshToken = user.refreshToken; // store in token (server-side)
         token.name = user.name;
         token.email = user.email;
         token.avatar = user.avatar;
         token.coverImage = user.coverImage;
         token.watchHistory = user.watchHistory;
+        // store access token expiry to avoid repeated decode
+        try {
+          const decoded = jwtDecode(token.accessToken);
+          token.accessTokenExpires = decoded.exp; // seconds since epoch
+        } catch (e) {
+          token.accessTokenExpires = Math.floor(Date.now() / 1000) + 60 * 15; // fallback
+        }
       }
 
-      if(token?.accessToken){
-        const decoded = jwtDecode(token.accessToken);
-        const currentTime = Math.floor(Date.now() / 1000);
-        console.log("Decoded jwt expDate:", decoded.exp, "Current Time:", currentTime);
-        if (decoded.exp < currentTime) {
-          // Access token expired, try to refresh it
-          const newTokens = await refreshAccessToken(token.refreshToken);
-          token.accessToken = newTokens.accessToken;
-          token.refreshToken = newTokens.refreshToken;
+      // If we have an access token and expiry
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (token?.accessToken && token?.accessTokenExpires) {
+        // If not expired yet, just return token
+        if (token.accessTokenExpires > currentTime + 5) {
+          // still valid (with 5s buffer)
+          return token;
+        }
+
+        // Access token expired -> try refresh
+        if (!token.refreshToken) {
+          // no refresh token available — force re-login
+          token.error = "NoRefreshToken";
+          return token;
+        }
+
+        const newTokens = await refreshAccessToken(token.refreshToken);
+
+        if (!newTokens) {
+          // Refresh failed
+          token.error = "RefreshAccessTokenError";
+          return token;
+        }
+
+        // Success: update tokens and expiry
+        token.accessToken = newTokens.accessToken;
+        token.refreshToken = newTokens.refreshToken;
+        try {
+          const decoded = jwtDecode(token.accessToken);
+          token.accessTokenExpires = decoded.exp;
+        } catch (e) {
+          token.accessTokenExpires = Math.floor(Date.now() / 1000) + 60 * 15;
         }
       }
 
       return token;
     },
+
+    // session is returned to the client — DO NOT expose refreshToken here
     async session({ session, token }) {
-      if(token){
-        session.user.id = token.id;
-        session.accessToken = token.accessToken;
-        session.refreshToken = token.refreshToken;
-        session.user.name = token.name;
-        session.user.email = token.email;
-        session.user.avatar = token.avatar;
-        session.user.coverImage = token.coverImage;
-        session.user.watchHistory = token.watchHistory;
+      if (!session.user) session.user = {};
+      session.user.id = token.id;
+      session.user.name = token.name;
+      session.user.email = token.email;
+      session.user.avatar = token.avatar;
+      session.user.coverImage = token.coverImage;
+      session.user.watchHistory = token.watchHistory;
+
+      // Expose accessToken (short-lived) so client can call backend if needed
+      session.accessToken = token.accessToken;
+      // Do NOT add session.refreshToken = token.refreshToken  <--- security risk
+
+      // Expose an error field so client-side can detect refresh problems
+      if (token.error) {
+        session.error = token.error;
       }
+
       return session;
     },
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-
   pages: {
-    signIn: '/login',  // 👈 custom login page
+    signIn: "/login",
   },
-  
 };
