@@ -315,7 +315,7 @@ export default function YouTubeHome() {
                   </Link>
                 )
               )}
-              {session && subscriptions.length > 0 && (
+              {session && subscriptions?.length > 0 && (
                 <>
                   {subscriptions.map((sub, index) => (
                     <Link
