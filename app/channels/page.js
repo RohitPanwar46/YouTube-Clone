@@ -18,6 +18,9 @@ export default function ChannelsPage() {
   const { data: session } = useSession();
 
   const toggleSubscription = async (channelId) => {
+    if (!session || !session.accessToken) {
+      return;
+    }
     // Set loading state for this specific channel
     setSubscribing((prev) => ({
       ...prev,

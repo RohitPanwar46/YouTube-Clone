@@ -451,13 +451,12 @@ const Player = ({ params }) => {
                     <FiSave className="text-lg" />
                     <span>Save</span>
                   </button>
-
                 </div>
               </div>
 
               {/* Channel Info */}
               <div className="flex items-center justify-between py-4 border-b border-[#303030]">
-                <div className="flex items-center gap-3">
+                <div onClick={() => router.push(`/channels/${video.owner?.username}`)} className="flex items-center gap-3 cursor-pointer">
                   <Image
                     src={video.owner?.avatar || "/default-avatar.png"}
                     alt={video.owner?.username}
@@ -473,7 +472,7 @@ const Player = ({ params }) => {
 
                 <button
                   onClick={handleSubscribe}
-                  className={`px-4 py-2 rounded-full font-medium ${
+                  className={`px-4 py-2 rounded-full font-medium cursor-pointer ${
                     isSubscribed
                       ? "bg-[#303030] text-white"
                       : "bg-red-600 hover:bg-red-700"

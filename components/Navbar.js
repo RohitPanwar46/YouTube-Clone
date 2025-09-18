@@ -375,7 +375,7 @@ const Navbar = () => {
               />
               <button
                 type="submit"
-                className="bg-[#202020] px-6 rounded-r-full hover:bg-[#303030] transition-all duration-300"
+                className="bg-[#202020] cursor-pointer px-6 rounded-r-full hover:bg-[#303030] transition-all duration-300"
                 aria-label="Search"
               >
                 <svg
@@ -407,7 +407,7 @@ const Navbar = () => {
             </button>
 
             {/* Avatar Dropdown */}
-            <div className="relative" ref={dropdownRef}>
+            <div className="relative cursor-pointer" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="focus:outline-none"
@@ -415,7 +415,7 @@ const Navbar = () => {
               >
                 <Image
                   src={session?.user.avatar || "/default-avatar.png"}
-                  className="w-7 h-7 md:w-8 md:h-8 rounded-full"
+                  className="w-7 h-7 md:w-8 md:h-8 rounded-full cursor-pointer"
                   alt="User Avatar"
                   width={32}
                   height={32}

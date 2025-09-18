@@ -320,7 +320,7 @@ export default function YouTubeHome() {
                   {subscriptions.map((sub, index) => (
                     <Link
                       key={index}
-                      href={`/subscriptions/${sub._id}`}
+                      href={`/channels/${sub.channel.username}`}
                       className="flex items-center px-3 md:px-6 py-3 cursor-pointer hover:bg-[#181818] transition-all duration-300 group"
                     >
                       <Image
