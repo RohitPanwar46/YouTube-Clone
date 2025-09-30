@@ -1,6 +1,7 @@
 // [...nextauth].js
 import CredentialsProvider from "next-auth/providers/credentials";
 import {jwtDecode} from "jwt-decode"; // default import // optional - server-side fetch is available in Node/Next
+import { redirect } from "next/navigation";
 
 async function refreshAccessToken(refreshToken) {
   try {
@@ -15,8 +16,8 @@ async function refreshAccessToken(refreshToken) {
     const data = await res.json();
 
     if (!res.ok) {
-      // backend returned error (invalid/expired refresh)
-      throw new Error(data.message || "Failed to refresh access token");
+      // backend returned error (invalid/expired refresh token)
+      redirect("/login?error=SessionExpired");
     }
 
     return {
