@@ -38,7 +38,6 @@ const Channel = ({ params }) => {
         }
         
         const channelData = await channelRes.json();
-        console.log(channelData);
         setChannel(channelData.data || null);
         setIsSubscribed(channelData.data.isSubscribed || false);
         setChannelId(channelData.data._id || null);
@@ -54,7 +53,6 @@ const Channel = ({ params }) => {
         
         if (videosRes.ok) {
           const videosData = await videosRes.json();
-          console.log("videosData :", videosData);
           setVideos(videosData.data || []);
         } else {
           setVideos([]);

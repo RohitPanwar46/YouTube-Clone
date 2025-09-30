@@ -16,7 +16,6 @@ async function refreshAccessToken(refreshToken) {
 
     if (!res.ok) {
       // backend returned error (invalid/expired refresh token)
-      alert("Refresh token invalid or expired, please log in again.");
       console.error("Error refreshing access token:", data);
       return null;
     }
@@ -157,7 +156,7 @@ export const authOptions = {
 
       // Expose an error field so client-side can detect refresh problems
       if (token.error) {
-        session.error = token.error;
+        return null;
       }
 
       return session;

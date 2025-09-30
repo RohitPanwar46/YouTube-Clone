@@ -119,7 +119,6 @@ const Dashboard = () => {
       if (!response.ok) {
         console.error(response)
       }
-      console.log("response of deleted video: ", await response.json());
       setChannelVideos((prevVideos) => prevVideos.filter((video) => video._id !== videoId));
       setLoading(false);
     } catch (error) {

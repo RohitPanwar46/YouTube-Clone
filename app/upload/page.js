@@ -129,7 +129,6 @@ const Uploader = () => {
           setUploadSpeed(speed);
         }
       });
-      console.log("response of uploading video is: ", response)
       if (response.status < 400) {
         setIsSuccess(true);
       }
