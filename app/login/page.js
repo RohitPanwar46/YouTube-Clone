@@ -63,7 +63,7 @@ export default function LoginPage() {
     try {
       const result = await signIn("credentials", {
         email: formData.email,
-        username: formData.username,
+        username: formData.username.toLowerCase(),
         password: formData.password,
         callbackUrl: "/", // Redirect to home on success
       });
