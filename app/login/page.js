@@ -5,6 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
+const TEST_CREDENTIALS = {
+  email: "test123@gmail.com",
+  username: "test_user",
+  password: "12345678",
+};
+
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     username: "",
@@ -19,10 +25,15 @@ export default function LoginPage() {
   const { data: session } = useSession();
 
   useEffect(() => {
-    if(session){
-      router.back();
+    if (session) {
+      router.replace("/");
     }
-  }, [router,session]);
+  }, [router, session]);
+
+  const fillTestCredentials = () => {
+    setFormData(TEST_CREDENTIALS);
+    setErrors({});
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -65,16 +76,18 @@ export default function LoginPage() {
         email: formData.email,
         username: formData.username.toLowerCase(),
         password: formData.password,
-        callbackUrl: "/", // Redirect to home on success
+        redirect: false,
       });
 
-      if (result.error) {
-        setErrors({submit: result.error});
+      if (result?.error) {
+        setErrors({ submit: result.error });
         console.error("Login failed:", result.error);
+      } else {
+        router.replace("/");
       }
     } catch (error) {
       console.error("SignIn exception:", error);
-      setErrors({submit:error});
+      setErrors({ submit: error?.message || "Something went wrong" });
     }
     setIsLoading(false);
   }
@@ -103,6 +116,40 @@ export default function LoginPage() {
           <p className="text-gray-400 mt-2">
             Welcome back! Please sign in to continue
           </p>
+        </div>
+
+        {/* Test Credentials */}
+        <div className="bg-[#181818] border border-[#303030] rounded-lg p-4">
+          <p className="text-sm font-semibold text-white mb-2">
+            🧪 Test Credentials
+          </p>
+          <div className="text-sm text-gray-300 space-y-1">
+            <p>
+              Email:{" "}
+              <span className="text-white font-mono">
+                {TEST_CREDENTIALS.email}
+              </span>
+            </p>
+            <p>
+              Username:{" "}
+              <span className="text-white font-mono">
+                {TEST_CREDENTIALS.username}
+              </span>
+            </p>
+            <p>
+              Password:{" "}
+              <span className="text-white font-mono">
+                {TEST_CREDENTIALS.password}
+              </span>
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={fillTestCredentials}
+            className="mt-3 w-full py-2 px-4 rounded-lg text-sm font-medium text-white bg-[#303030] hover:bg-[#404040] focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-200"
+          >
+            Auto-fill test credentials
+          </button>
         </div>
 
         {/* Form */}
